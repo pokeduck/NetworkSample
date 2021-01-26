@@ -19,6 +19,7 @@
 		E090902325BFF07D0060B70A /* NetworkSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090902225BFF07D0060B70A /* NetworkSampleTests.swift */; };
 		E090902E25BFF07E0060B70A /* NetworkSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090902D25BFF07E0060B70A /* NetworkSampleUITests.swift */; };
 		E090907B25BFFBFF0060B70A /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090907A25BFFBFF0060B70A /* API.swift */; };
+		E090908F25C014920060B70A /* AccessToken.json in Resources */ = {isa = PBXBuildFile; fileRef = E090908E25C014920060B70A /* AccessToken.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		E090902D25BFF07E0060B70A /* NetworkSampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSampleUITests.swift; sourceTree = "<group>"; };
 		E090902F25BFF07E0060B70A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E090907A25BFFBFF0060B70A /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		E090908E25C014920060B70A /* AccessToken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessToken.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
 				E090907A25BFFBFF0060B70A /* API.swift */,
+				E090908E25C014920060B70A /* AccessToken.json */,
 				E090901125BFF07D0060B70A /* Main.storyboard */,
 				E090901425BFF07D0060B70A /* Assets.xcassets */,
 				E090901625BFF07D0060B70A /* LaunchScreen.storyboard */,
@@ -282,6 +285,7 @@
 				E090901825BFF07D0060B70A /* LaunchScreen.storyboard in Resources */,
 				E090901525BFF07D0060B70A /* Assets.xcassets in Resources */,
 				E090901325BFF07D0060B70A /* Main.storyboard in Resources */,
+				E090908F25C014920060B70A /* AccessToken.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

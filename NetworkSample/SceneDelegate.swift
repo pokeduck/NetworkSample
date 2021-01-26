@@ -6,12 +6,41 @@
 //
 
 import UIKit
+import Moya
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let path = URLContexts.first?.url.absoluteString,
+              let queryItems = URLComponents(string: path)?.queryItems
+              else { return }
+        var code = ""
+        var state = ""
+        queryItems.forEach { (item) in
+            switch item.name {
+            case "code":
+                code = item.value ?? ""
+            case "state":
+                state = item.value ?? ""
+            default:
+                break
+            }
+        }
+        let access = GitHub.AccessToken(code: code, state: state)
+        print(access.headers)
+        MoyaProvider<GitHub.AccessToken>().request(access) { (result) in
+            switch result {
+            case .success(let resp) :
+                print(resp.response)
+            case .failure(let error) :
+                print(error.localizedDescription)
+            }
+            print(result)
+            
+        }
+    }
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
