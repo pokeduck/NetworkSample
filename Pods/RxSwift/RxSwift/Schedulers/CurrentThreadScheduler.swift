@@ -6,33 +6,26 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import class Foundation.NSObject
-import protocol Foundation.NSCopying
-import class Foundation.Thread
 import Dispatch
+import Foundation
 
 #if os(Linux)
-    import struct Foundation.pthread_key_t
-    import func Foundation.pthread_setspecific
-    import func Foundation.pthread_getspecific
-    import func Foundation.pthread_key_create
-    
     fileprivate enum CurrentThreadSchedulerQueueKey {
         fileprivate static let instance = "RxSwift.CurrentThreadScheduler.Queue"
     }
 #else
     private class CurrentThreadSchedulerQueueKey: NSObject, NSCopying {
         static let instance = CurrentThreadSchedulerQueueKey()
-        private override init() {
+        override private init() {
             super.init()
         }
 
         override var hash: Int {
-            return 0
+            0
         }
 
         public func copy(with zone: NSZone? = nil) -> Any {
-            return self
+            self
         }
     }
 #endif
@@ -42,7 +35,7 @@ import Dispatch
 /// This is the default scheduler for operators that generate elements.
 ///
 /// This scheduler is also sometimes called `trampoline scheduler`.
-public class CurrentThreadScheduler : ImmediateSchedulerType {
+public class CurrentThreadScheduler: ImmediateSchedulerType {
     typealias ScheduleQueue = RxMutableBox<Queue<ScheduledItemType>>
 
     /// The singleton instance of the current thread scheduler.
@@ -51,7 +44,7 @@ public class CurrentThreadScheduler : ImmediateSchedulerType {
     private static var isScheduleRequiredKey: pthread_key_t = { () -> pthread_key_t in
         let key = UnsafeMutablePointer<pthread_key_t>.allocate(capacity: 1)
         defer { key.deallocate() }
-                                                               
+
         guard pthread_key_create(key, nil) == 0 else {
             rxFatalError("isScheduleRequired key creation failed")
         }
@@ -60,12 +53,12 @@ public class CurrentThreadScheduler : ImmediateSchedulerType {
     }()
 
     private static var scheduleInProgressSentinel: UnsafeRawPointer = { () -> UnsafeRawPointer in
-        return UnsafeRawPointer(UnsafeMutablePointer<Int>.allocate(capacity: 1))
+        UnsafeRawPointer(UnsafeMutablePointer<Int>.allocate(capacity: 1))
     }()
 
-    static var queue : ScheduleQueue? {
+    static var queue: ScheduleQueue? {
         get {
-            return Thread.getThreadLocalStorageValueForKey(CurrentThreadSchedulerQueueKey.instance)
+            Thread.getThreadLocalStorageValueForKey(CurrentThreadSchedulerQueueKey.instance)
         }
         set {
             Thread.setThreadLocalStorageValue(newValue, forKey: CurrentThreadSchedulerQueueKey.instance)
@@ -73,9 +66,9 @@ public class CurrentThreadScheduler : ImmediateSchedulerType {
     }
 
     /// Gets a value that indicates whether the caller must call a `schedule` method.
-    public static private(set) var isScheduleRequired: Bool {
+    public private(set) static var isScheduleRequired: Bool {
         get {
-            return pthread_getspecific(CurrentThreadScheduler.isScheduleRequiredKey) == nil
+            pthread_getspecific(CurrentThreadScheduler.isScheduleRequiredKey) == nil
         }
         set(isScheduleRequired) {
             if pthread_setspecific(CurrentThreadScheduler.isScheduleRequiredKey, isScheduleRequired ? nil : scheduleInProgressSentinel) != 0 {
@@ -85,15 +78,15 @@ public class CurrentThreadScheduler : ImmediateSchedulerType {
     }
 
     /**
-    Schedules an action to be executed as soon as possible on current thread.
+     Schedules an action to be executed as soon as possible on current thread.
 
-    If this method is called on some thread that doesn't have `CurrentThreadScheduler` installed, scheduler will be
-    automatically installed and uninstalled after all work is performed.
+     If this method is called on some thread that doesn't have `CurrentThreadScheduler` installed, scheduler will be
+     automatically installed and uninstalled after all work is performed.
 
-    - parameter state: State passed to the action to be executed.
-    - parameter action: Action to be executed.
-    - returns: The disposable object used to cancel the scheduled action (best effort).
-    */
+     - parameter state: State passed to the action to be executed.
+     - parameter action: Action to be executed.
+     - returns: The disposable object used to cancel the scheduled action (best effort).
+     */
     public func schedule<StateType>(_ state: StateType, action: @escaping (StateType) -> Disposable) -> Disposable {
         if CurrentThreadScheduler.isScheduleRequired {
             CurrentThreadScheduler.isScheduleRequired = false
@@ -124,8 +117,7 @@ public class CurrentThreadScheduler : ImmediateSchedulerType {
         let queue: RxMutableBox<Queue<ScheduledItemType>>
         if let existingQueue = existingQueue {
             queue = existingQueue
-        }
-        else {
+        } else {
             queue = RxMutableBox(Queue<ScheduledItemType>(capacity: 1))
             CurrentThreadScheduler.queue = queue
         }

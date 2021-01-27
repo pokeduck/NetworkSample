@@ -20,6 +20,12 @@
 		E090902E25BFF07E0060B70A /* NetworkSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090902D25BFF07E0060B70A /* NetworkSampleUITests.swift */; };
 		E090907B25BFFBFF0060B70A /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090907A25BFFBFF0060B70A /* API.swift */; };
 		E090908F25C014920060B70A /* AccessToken.json in Resources */ = {isa = PBXBuildFile; fileRef = E090908E25C014920060B70A /* AccessToken.json */; };
+		E09090AF25C11B470060B70A /* GitHubUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090AE25C11B470060B70A /* GitHubUser.swift */; };
+		E09090B425C11BF80060B70A /* GitHubUser.json in Resources */ = {isa = PBXBuildFile; fileRef = E09090B325C11BF80060B70A /* GitHubUser.json */; };
+		E09090B925C146710060B70A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090B825C146710060B70A /* DebugLog.swift */; };
+		E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */; };
+		E09090E425C15AA50060B70A /* GitHubAuthWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */; };
+		E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +71,12 @@
 		E090902F25BFF07E0060B70A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E090907A25BFFBFF0060B70A /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		E090908E25C014920060B70A /* AccessToken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessToken.json; sourceTree = "<group>"; };
+		E09090AE25C11B470060B70A /* GitHubUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUser.swift; sourceTree = "<group>"; };
+		E09090B325C11BF80060B70A /* GitHubUser.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = GitHubUser.json; sourceTree = "<group>"; };
+		E09090B825C146710060B70A /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
+		E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthViewController.swift; sourceTree = "<group>"; };
+		E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthWebView.swift; sourceTree = "<group>"; };
+		E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthTopView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +159,13 @@
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
 				E090907A25BFFBFF0060B70A /* API.swift */,
+				E09090AE25C11B470060B70A /* GitHubUser.swift */,
+				E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */,
+				E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */,
+				E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */,
+				E09090B825C146710060B70A /* DebugLog.swift */,
 				E090908E25C014920060B70A /* AccessToken.json */,
+				E09090B325C11BF80060B70A /* GitHubUser.json */,
 				E090901125BFF07D0060B70A /* Main.storyboard */,
 				E090901425BFF07D0060B70A /* Assets.xcassets */,
 				E090901625BFF07D0060B70A /* LaunchScreen.storyboard */,
@@ -182,6 +200,7 @@
 			buildConfigurationList = E090903225BFF07E0060B70A /* Build configuration list for PBXNativeTarget "NetworkSample" */;
 			buildPhases = (
 				FCEC3248B7122E8C58B9F2AD /* [CP] Check Pods Manifest.lock */,
+				E09090ED25C16BB10060B70A /* ShellScript */,
 				E090900425BFF07D0060B70A /* Sources */,
 				E090900525BFF07D0060B70A /* Frameworks */,
 				E090900625BFF07D0060B70A /* Resources */,
@@ -284,6 +303,7 @@
 			files = (
 				E090901825BFF07D0060B70A /* LaunchScreen.storyboard in Resources */,
 				E090901525BFF07D0060B70A /* Assets.xcassets in Resources */,
+				E09090B425C11BF80060B70A /* GitHubUser.json in Resources */,
 				E090901325BFF07D0060B70A /* Main.storyboard in Resources */,
 				E090908F25C014920060B70A /* AccessToken.json in Resources */,
 			);
@@ -350,6 +370,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E09090ED25C16BB10060B70A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+		};
 		E9F94F4F08523347F8BAF3F0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -413,10 +450,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E09090E425C15AA50060B70A /* GitHubAuthWebView.swift in Sources */,
 				E090901025BFF07D0060B70A /* ViewController.swift in Sources */,
 				E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */,
+				E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */,
+				E09090B925C146710060B70A /* DebugLog.swift in Sources */,
+				E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */,
 				E090907B25BFFBFF0060B70A /* API.swift in Sources */,
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,
+				E09090AF25C11B470060B70A /* GitHubUser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,37 +6,36 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-extension Disposable {
+public extension Disposable {
     /// Adds `self` to `bag`
     ///
     /// - parameter bag: `DisposeBag` to add `self` to.
-    public func disposed(by bag: DisposeBag) {
+    func disposed(by bag: DisposeBag) {
         bag.insert(self)
     }
 }
 
 /**
-Thread safe bag that disposes added disposables on `deinit`.
+ Thread safe bag that disposes added disposables on `deinit`.
 
-This returns ARC (RAII) like resource management to `RxSwift`.
+ This returns ARC (RAII) like resource management to `RxSwift`.
 
-In case contained disposables need to be disposed, just put a different dispose bag
-or create a new one in its place.
+ In case contained disposables need to be disposed, just put a different dispose bag
+ or create a new one in its place.
 
-    self.existingDisposeBag = DisposeBag()
+     self.existingDisposeBag = DisposeBag()
 
-In case explicit disposal is necessary, there is also `CompositeDisposable`.
-*/
+ In case explicit disposal is necessary, there is also `CompositeDisposable`.
+ */
 public final class DisposeBag: DisposeBase {
-    
-    private var _lock = SpinLock()
-    
+    private var lock = SpinLock()
+
     // state
-    private var _disposables = [Disposable]()
-    private var _isDisposed = false
-    
+    private var disposables = [Disposable]()
+    private var isDisposed = false
+
     /// Constructs new empty dispose bag.
-    public override init() {
+    override public init() {
         super.init()
     }
 
@@ -44,23 +43,24 @@ public final class DisposeBag: DisposeBase {
     ///
     /// - parameter disposable: Disposable to add.
     public func insert(_ disposable: Disposable) {
-        self._insert(disposable)?.dispose()
+        _insert(disposable)?.dispose()
     }
-    
+
     private func _insert(_ disposable: Disposable) -> Disposable? {
-        self._lock.lock(); defer { self._lock.unlock() }
-        if self._isDisposed {
-            return disposable
+        lock.performLocked {
+            if self.isDisposed {
+                return disposable
+            }
+
+            self.disposables.append(disposable)
+
+            return nil
         }
-
-        self._disposables.append(disposable)
-
-        return nil
     }
 
     /// This is internal on purpose, take a look at `CompositeDisposable` instead.
     private func dispose() {
-        let oldDisposables = self._dispose()
+        let oldDisposables = _dispose()
 
         for disposable in oldDisposables {
             disposable.dispose()
@@ -68,47 +68,66 @@ public final class DisposeBag: DisposeBase {
     }
 
     private func _dispose() -> [Disposable] {
-        self._lock.lock(); defer { self._lock.unlock() }
+        lock.performLocked {
+            let disposables = self.disposables
 
-        let disposables = self._disposables
-        
-        self._disposables.removeAll(keepingCapacity: false)
-        self._isDisposed = true
-        
-        return disposables
+            self.disposables.removeAll(keepingCapacity: false)
+            self.isDisposed = true
+
+            return disposables
+        }
     }
-    
+
     deinit {
         self.dispose()
     }
 }
 
-extension DisposeBag {
-
+public extension DisposeBag {
     /// Convenience init allows a list of disposables to be gathered for disposal.
-    public convenience init(disposing disposables: Disposable...) {
+    convenience init(disposing disposables: Disposable...) {
         self.init()
-        self._disposables += disposables
+        self.disposables += disposables
+    }
+
+    /// Convenience init which utilizes a function builder to let you pass in a list of
+    /// disposables to make a DisposeBag of.
+    convenience init(@DisposableBuilder builder: () -> [Disposable]) {
+        self.init(disposing: builder())
     }
 
     /// Convenience init allows an array of disposables to be gathered for disposal.
-    public convenience init(disposing disposables: [Disposable]) {
+    convenience init(disposing disposables: [Disposable]) {
         self.init()
-        self._disposables += disposables
+        self.disposables += disposables
     }
 
     /// Convenience function allows a list of disposables to be gathered for disposal.
-    public func insert(_ disposables: Disposable...) {
-        self.insert(disposables)
+    func insert(_ disposables: Disposable...) {
+        insert(disposables)
+    }
+
+    /// Convenience function allows a list of disposables to be gathered for disposal.
+    func insert(@DisposableBuilder builder: () -> [Disposable]) {
+        insert(builder())
     }
 
     /// Convenience function allows an array of disposables to be gathered for disposal.
-    public func insert(_ disposables: [Disposable]) {
-        self._lock.lock(); defer { self._lock.unlock() }
-        if self._isDisposed {
-            disposables.forEach { $0.dispose() }
-        } else {
-            self._disposables += disposables
+    func insert(_ disposables: [Disposable]) {
+        lock.performLocked {
+            if self.isDisposed {
+                disposables.forEach { $0.dispose() }
+            } else {
+                self.disposables += disposables
+            }
+        }
+    }
+
+    /// A function builder accepting a list of Disposables and returning them as an array.
+    @_functionBuilder
+    enum DisposableBuilder {
+        public static func buildBlock(_ disposables: Disposable...) -> [Disposable] {
+            disposables
         }
     }
 }

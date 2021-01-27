@@ -16,49 +16,50 @@ enum TailRecursiveSinkCommand {
 #endif
 
 /// This class is usually used with `Generator` version of the operators.
-class TailRecursiveSink<Sequence: Swift.Sequence, Observer: ObserverType>
-    : Sink<Observer>
-    , InvocableWithValueType where Sequence.Element: ObservableConvertibleType, Sequence.Element.Element == Observer.Element {
+class TailRecursiveSink<Sequence: Swift.Sequence, Observer: ObserverType>:
+    Sink<Observer>,
+    InvocableWithValueType where Sequence.Element: ObservableConvertibleType, Sequence.Element.Element == Observer.Element
+{
     typealias Value = TailRecursiveSinkCommand
-    typealias Element = Observer.Element 
+    typealias Element = Observer.Element
     typealias SequenceGenerator = (generator: Sequence.Iterator, remaining: IntMax?)
 
-    var _generators: [SequenceGenerator] = []
-    var _isDisposed = false
-    var _subscription = SerialDisposable()
+    var generators: [SequenceGenerator] = []
+    var disposed = false
+    var subscription = SerialDisposable()
 
     // this is thread safe object
-    var _gate = AsyncLock<InvocableScheduledItem<TailRecursiveSink<Sequence, Observer>>>()
+    var gate = AsyncLock<InvocableScheduledItem<TailRecursiveSink<Sequence, Observer>>>()
 
     override init(observer: Observer, cancel: Cancelable) {
         super.init(observer: observer, cancel: cancel)
     }
 
     func run(_ sources: SequenceGenerator) -> Disposable {
-        self._generators.append(sources)
+        generators.append(sources)
 
-        self.schedule(.moveNext)
+        schedule(.moveNext)
 
-        return self._subscription
+        return subscription
     }
 
     func invoke(_ command: TailRecursiveSinkCommand) {
         switch command {
         case .dispose:
-            self.disposeCommand()
+            disposeCommand()
         case .moveNext:
-            self.moveNextCommand()
+            moveNextCommand()
         }
     }
 
     // simple implementation for now
     func schedule(_ command: TailRecursiveSinkCommand) {
-        self._gate.invoke(InvocableScheduledItem(invocable: self, state: command))
+        gate.invoke(InvocableScheduledItem(invocable: self, state: command))
     }
 
     func done() {
-        self.forwardOn(.completed)
-        self.dispose()
+        forwardOn(.completed)
+        dispose()
     }
 
     func extract(_ observable: Observable<Element>) -> SequenceGenerator? {
@@ -71,16 +72,16 @@ class TailRecursiveSink<Sequence: Swift.Sequence, Observer: ObserverType>
         var next: Observable<Element>?
 
         repeat {
-            guard let (g, left) = self._generators.last else {
+            guard let (g, left) = generators.last else {
                 break
             }
-            
-            if self._isDisposed {
+
+            if isDisposed {
                 return
             }
 
-            self._generators.removeLast()
-            
+            generators.removeLast()
+
             var e = g
 
             guard let nextCandidate = e.next()?.asObservable() else {
@@ -98,36 +99,34 @@ class TailRecursiveSink<Sequence: Swift.Sequence, Observer: ObserverType>
             if let knownOriginalLeft = left {
                 // `- 1` because generator.next() has just been called
                 if knownOriginalLeft - 1 >= 1 {
-                    self._generators.append((e, knownOriginalLeft - 1))
+                    generators.append((e, knownOriginalLeft - 1))
                 }
-            }
-            else {
-                self._generators.append((e, nil))
+            } else {
+                generators.append((e, nil))
             }
 
-            let nextGenerator = self.extract(nextCandidate)
+            let nextGenerator = extract(nextCandidate)
 
             if let nextGenerator = nextGenerator {
-                self._generators.append(nextGenerator)
+                generators.append(nextGenerator)
                 #if DEBUG || TRACE_RESOURCES
-                    if maxTailRecursiveSinkStackSize < self._generators.count {
-                        maxTailRecursiveSinkStackSize = self._generators.count
+                    if maxTailRecursiveSinkStackSize < generators.count {
+                        maxTailRecursiveSinkStackSize = generators.count
                     }
                 #endif
-            }
-            else {
+            } else {
                 next = nextCandidate
             }
         } while next == nil
 
         guard let existingNext = next else {
-            self.done()
+            done()
             return
         }
 
         let disposable = SingleAssignmentDisposable()
-        self._subscription.disposable = disposable
-        disposable.setDisposable(self.subscribeToNext(existingNext))
+        subscription.disposable = disposable
+        disposable.setDisposable(subscribeToNext(existingNext))
     }
 
     func subscribeToNext(_ source: Observable<Element>) -> Disposable {
@@ -135,17 +134,16 @@ class TailRecursiveSink<Sequence: Swift.Sequence, Observer: ObserverType>
     }
 
     func disposeCommand() {
-        self._isDisposed = true
-        self._generators.removeAll(keepingCapacity: false)
+        disposed = true
+        generators.removeAll(keepingCapacity: false)
     }
 
     override func dispose() {
         super.dispose()
-        
-        self._subscription.dispose()
-        self._gate.dispose()
-        
-        self.schedule(.dispose)
+
+        subscription.dispose()
+        gate.dispose()
+
+        schedule(.dispose)
     }
 }
-

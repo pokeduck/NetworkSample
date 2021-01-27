@@ -12,25 +12,24 @@ import Dispatch
 #endif
 
 /**
-Abstracts work that needs to be performed on `DispatchQueue.main`. In case `schedule` methods are called from `DispatchQueue.main`, it will perform action immediately without scheduling.
+ Abstracts work that needs to be performed on `DispatchQueue.main`. In case `schedule` methods are called from `DispatchQueue.main`, it will perform action immediately without scheduling.
 
-This scheduler is usually used to perform UI work.
+ This scheduler is usually used to perform UI work.
 
-Main scheduler is a specialization of `SerialDispatchQueueScheduler`.
+ Main scheduler is a specialization of `SerialDispatchQueueScheduler`.
 
-This scheduler is optimized for `observeOn` operator. To ensure observable sequence is subscribed on main thread using `subscribeOn`
-operator please use `ConcurrentMainScheduler` because it is more optimized for that purpose.
-*/
-public final class MainScheduler : SerialDispatchQueueScheduler {
-
-    private let _mainQueue: DispatchQueue
+ This scheduler is optimized for `observeOn` operator. To ensure observable sequence is subscribed on main thread using `subscribeOn`
+ operator please use `ConcurrentMainScheduler` because it is more optimized for that purpose.
+ */
+public final class MainScheduler: SerialDispatchQueueScheduler {
+    private let mainQueue: DispatchQueue
 
     let numberEnqueued = AtomicInt(0)
 
     /// Initializes new instance of `MainScheduler`.
     public init() {
-        self._mainQueue = DispatchQueue.main
-        super.init(serialQueue: self._mainQueue)
+        mainQueue = DispatchQueue.main
+        super.init(serialQueue: mainQueue)
     }
 
     /// Singleton instance of `MainScheduler`
@@ -57,19 +56,19 @@ public final class MainScheduler : SerialDispatchQueueScheduler {
     }
 
     override func scheduleInternal<StateType>(_ state: StateType, action: @escaping (StateType) -> Disposable) -> Disposable {
-        let previousNumberEnqueued = increment(self.numberEnqueued)
+        let previousNumberEnqueued = increment(numberEnqueued)
 
-        if DispatchQueue.isMain && previousNumberEnqueued == 0 {
+        if DispatchQueue.isMain, previousNumberEnqueued == 0 {
             let disposable = action(state)
-            decrement(self.numberEnqueued)
+            decrement(numberEnqueued)
             return disposable
         }
 
         let cancel = SingleAssignmentDisposable()
 
-        self._mainQueue.async {
+        mainQueue.async {
             if !cancel.isDisposed {
-                _ = action(state)
+                cancel.setDisposable(action(state))
             }
 
             decrement(self.numberEnqueued)

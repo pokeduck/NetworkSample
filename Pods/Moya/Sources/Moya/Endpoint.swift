@@ -2,7 +2,6 @@ import Foundation
 
 /// Used for stubbing responses.
 public enum EndpointSampleResponse {
-
     /// The network returned a response, including status code and data.
     case networkResponse(Int, Data)
 
@@ -39,8 +38,8 @@ open class Endpoint {
                 sampleResponseClosure: @escaping SampleResponseClosure,
                 method: Moya.Method,
                 task: Task,
-                httpHeaderFields: [String: String]?) {
-
+                httpHeaderFields: [String: String]?)
+    {
         self.url = url
         self.sampleResponseClosure = sampleResponseClosure
         self.method = method
@@ -50,20 +49,20 @@ open class Endpoint {
 
     /// Convenience method for creating a new `Endpoint` with the same properties as the receiver, but with added HTTP header fields.
     open func adding(newHTTPHeaderFields: [String: String]) -> Endpoint {
-        return Endpoint(url: url, sampleResponseClosure: sampleResponseClosure, method: method, task: task, httpHeaderFields: add(httpHeaderFields: newHTTPHeaderFields))
+        Endpoint(url: url, sampleResponseClosure: sampleResponseClosure, method: method, task: task, httpHeaderFields: add(httpHeaderFields: newHTTPHeaderFields))
     }
 
     /// Convenience method for creating a new `Endpoint` with the same properties as the receiver, but with replaced `task` parameter.
     open func replacing(task: Task) -> Endpoint {
-        return Endpoint(url: url, sampleResponseClosure: sampleResponseClosure, method: method, task: task, httpHeaderFields: httpHeaderFields)
+        Endpoint(url: url, sampleResponseClosure: sampleResponseClosure, method: method, task: task, httpHeaderFields: httpHeaderFields)
     }
 
-    fileprivate func add(httpHeaderFields headers: [String: String]?) -> [String: String]? {
+    private func add(httpHeaderFields headers: [String: String]?) -> [String: String]? {
         guard let unwrappedHeaders = headers, unwrappedHeaders.isEmpty == false else {
-            return self.httpHeaderFields
+            return httpHeaderFields
         }
 
-        var newHTTPHeaderFields = self.httpHeaderFields ?? [:]
+        var newHTTPHeaderFields = httpHeaderFields ?? [:]
         unwrappedHeaders.forEach { key, value in
             newHTTPHeaderFields[key] = value
         }
@@ -87,7 +86,7 @@ public extension Endpoint {
         switch task {
         case .requestPlain, .uploadFile, .uploadMultipart, .downloadDestination:
             return request
-        case .requestData(let data):
+        case let .requestData(data):
             request.httpBody = data
             return request
         case let .requestJSONEncodable(encodable):
@@ -114,6 +113,7 @@ public extension Endpoint {
             return try bodyfulRequest.encoded(parameters: urlParameters, parameterEncoding: urlEncoding)
         }
     }
+
     // swiftlint:enable cyclomatic_complexity
 }
 

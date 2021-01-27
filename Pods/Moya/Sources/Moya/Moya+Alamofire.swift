@@ -1,5 +1,5 @@
-import Foundation
 import Alamofire
+import Foundation
 
 public typealias Session = Alamofire.Session
 internal typealias Request = Alamofire.Request
@@ -26,7 +26,7 @@ public typealias DownloadDestination = Alamofire.DownloadRequest.Destination
 /// Make the Alamofire Request type conform to our type, to prevent leaking Alamofire to plugins.
 extension Request: RequestType {
     public var sessionHeaders: [String: String] {
-        return delegate?.sessionConfiguration.httpAdditionalHeaders as? [String: String] ?? [:]
+        delegate?.sessionConfiguration.httpAdditionalHeaders as? [String: String] ?? [:]
     }
 }
 
@@ -40,7 +40,7 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
 
     public fileprivate(set) var isCancelled = false
 
-    fileprivate var lock: DispatchSemaphore = DispatchSemaphore(value: 1)
+    fileprivate var lock = DispatchSemaphore(value: 1)
 
     public func cancel() {
         _ = lock.wait(timeout: DispatchTime.distantFuture)
@@ -51,13 +51,13 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
     }
 
     public init(action: @escaping () -> Void) {
-        self.cancelAction = action
-        self.request = nil
+        cancelAction = action
+        request = nil
     }
 
     init(request: Request) {
         self.request = request
-        self.cancelAction = {
+        cancelAction = {
             request.cancel()
         }
     }
@@ -69,7 +69,6 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
         }
         return request.cURLDescription()
     }
-
 }
 
 internal typealias RequestableCompletion = (HTTPURLResponse?, URLRequest?, Data?, Swift.Error?) -> Void
@@ -81,11 +80,11 @@ internal protocol Requestable {
 extension DataRequest: Requestable {
     internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
         if let callbackQueue = callbackQueue {
-            return response(queue: callbackQueue) { handler  in
+            return response(queue: callbackQueue) { handler in
                 completionHandler(handler.response, handler.request, handler.data, handler.error)
             }
         } else {
-            return response { handler  in
+            return response { handler in
                 completionHandler(handler.response, handler.request, handler.data, handler.error)
             }
         }
@@ -95,11 +94,11 @@ extension DataRequest: Requestable {
 extension DownloadRequest: Requestable {
     internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
         if let callbackQueue = callbackQueue {
-            return response(queue: callbackQueue) { handler  in
+            return response(queue: callbackQueue) { handler in
                 completionHandler(handler.response, handler.request, nil, handler.error)
             }
         } else {
-            return response { handler  in
+            return response { handler in
                 completionHandler(handler.response, handler.request, nil, handler.error)
             }
         }
@@ -107,7 +106,7 @@ extension DownloadRequest: Requestable {
 }
 
 final class MoyaRequestInterceptor: RequestInterceptor {
-    private let lock: NSRecursiveLock = NSRecursiveLock()
+    private let lock = NSRecursiveLock()
 
     var prepare: ((URLRequest) -> URLRequest)?
     private var internalWillSend: ((URLRequest) -> Void)?

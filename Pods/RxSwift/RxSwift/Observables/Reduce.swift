@@ -6,77 +6,76 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-
-extension ObservableType {
+public extension ObservableType {
     /**
-    Applies an `accumulator` function over an observable sequence, returning the result of the aggregation as a single element in the result sequence. The specified `seed` value is used as the initial accumulator value.
+     Applies an `accumulator` function over an observable sequence, returning the result of the aggregation as a single element in the result sequence. The specified `seed` value is used as the initial accumulator value.
 
-    For aggregation behavior with incremental intermediate results, see `scan`.
+     For aggregation behavior with incremental intermediate results, see `scan`.
 
-    - seealso: [reduce operator on reactivex.io](http://reactivex.io/documentation/operators/reduce.html)
+     - seealso: [reduce operator on reactivex.io](http://reactivex.io/documentation/operators/reduce.html)
 
-    - parameter seed: The initial accumulator value.
-    - parameter accumulator: A accumulator function to be invoked on each element.
-    - parameter mapResult: A function to transform the final accumulator value into the result value.
-    - returns: An observable sequence containing a single element with the final accumulator value.
-    */
-    public func reduce<A, Result>(_ seed: A, accumulator: @escaping (A, Element) throws -> A, mapResult: @escaping (A) throws -> Result)
-        -> Observable<Result> {
-        return Reduce(source: self.asObservable(), seed: seed, accumulator: accumulator, mapResult: mapResult)
+     - parameter seed: The initial accumulator value.
+     - parameter accumulator: A accumulator function to be invoked on each element.
+     - parameter mapResult: A function to transform the final accumulator value into the result value.
+     - returns: An observable sequence containing a single element with the final accumulator value.
+     */
+    func reduce<A, Result>(_ seed: A, accumulator: @escaping (A, Element) throws -> A, mapResult: @escaping (A) throws -> Result)
+        -> Observable<Result>
+    {
+        Reduce(source: asObservable(), seed: seed, accumulator: accumulator, mapResult: mapResult)
     }
 
     /**
-    Applies an `accumulator` function over an observable sequence, returning the result of the aggregation as a single element in the result sequence. The specified `seed` value is used as the initial accumulator value.
-    
-    For aggregation behavior with incremental intermediate results, see `scan`.
+     Applies an `accumulator` function over an observable sequence, returning the result of the aggregation as a single element in the result sequence. The specified `seed` value is used as the initial accumulator value.
 
-    - seealso: [reduce operator on reactivex.io](http://reactivex.io/documentation/operators/reduce.html)
-    
-    - parameter seed: The initial accumulator value.
-    - parameter accumulator: A accumulator function to be invoked on each element.
-    - returns: An observable sequence containing a single element with the final accumulator value.
-    */
-    public func reduce<A>(_ seed: A, accumulator: @escaping (A, Element) throws -> A)
-        -> Observable<A> {
-        return Reduce(source: self.asObservable(), seed: seed, accumulator: accumulator, mapResult: { $0 })
+     For aggregation behavior with incremental intermediate results, see `scan`.
+
+     - seealso: [reduce operator on reactivex.io](http://reactivex.io/documentation/operators/reduce.html)
+
+     - parameter seed: The initial accumulator value.
+     - parameter accumulator: A accumulator function to be invoked on each element.
+     - returns: An observable sequence containing a single element with the final accumulator value.
+     */
+    func reduce<A>(_ seed: A, accumulator: @escaping (A, Element) throws -> A)
+        -> Observable<A>
+    {
+        Reduce(source: asObservable(), seed: seed, accumulator: accumulator, mapResult: { $0 })
     }
 }
 
-final private class ReduceSink<SourceType, AccumulateType, Observer: ObserverType>: Sink<Observer>, ObserverType {
-    typealias ResultType = Observer.Element 
+private final class ReduceSink<SourceType, AccumulateType, Observer: ObserverType>: Sink<Observer>, ObserverType {
+    typealias ResultType = Observer.Element
     typealias Parent = Reduce<SourceType, AccumulateType, ResultType>
-    
-    private let _parent: Parent
-    private var _accumulation: AccumulateType
-    
+
+    private let parent: Parent
+    private var accumulation: AccumulateType
+
     init(parent: Parent, observer: Observer, cancel: Cancelable) {
-        self._parent = parent
-        self._accumulation = parent._seed
-        
+        self.parent = parent
+        accumulation = parent.seed
+
         super.init(observer: observer, cancel: cancel)
     }
-    
+
     func on(_ event: Event<SourceType>) {
         switch event {
-        case .next(let value):
+        case let .next(value):
             do {
-                self._accumulation = try self._parent._accumulator(self._accumulation, value)
-            }
-            catch let e {
+                accumulation = try parent.accumulator(accumulation, value)
+            } catch let e {
                 self.forwardOn(.error(e))
                 self.dispose()
             }
-        case .error(let e):
-            self.forwardOn(.error(e))
-            self.dispose()
+        case let .error(e):
+            forwardOn(.error(e))
+            dispose()
         case .completed:
             do {
-                let result = try self._parent._mapResult(self._accumulation)
-                self.forwardOn(.next(result))
-                self.forwardOn(.completed)
-                self.dispose()
-            }
-            catch let e {
+                let result = try parent.mapResult(accumulation)
+                forwardOn(.next(result))
+                forwardOn(.completed)
+                dispose()
+            } catch let e {
                 self.forwardOn(.error(e))
                 self.dispose()
             }
@@ -84,26 +83,25 @@ final private class ReduceSink<SourceType, AccumulateType, Observer: ObserverTyp
     }
 }
 
-final private class Reduce<SourceType, AccumulateType, ResultType>: Producer<ResultType> {
+private final class Reduce<SourceType, AccumulateType, ResultType>: Producer<ResultType> {
     typealias AccumulatorType = (AccumulateType, SourceType) throws -> AccumulateType
     typealias ResultSelectorType = (AccumulateType) throws -> ResultType
-    
-    private let _source: Observable<SourceType>
-    fileprivate let _seed: AccumulateType
-    fileprivate let _accumulator: AccumulatorType
-    fileprivate let _mapResult: ResultSelectorType
-    
+
+    private let source: Observable<SourceType>
+    fileprivate let seed: AccumulateType
+    fileprivate let accumulator: AccumulatorType
+    fileprivate let mapResult: ResultSelectorType
+
     init(source: Observable<SourceType>, seed: AccumulateType, accumulator: @escaping AccumulatorType, mapResult: @escaping ResultSelectorType) {
-        self._source = source
-        self._seed = seed
-        self._accumulator = accumulator
-        self._mapResult = mapResult
+        self.source = source
+        self.seed = seed
+        self.accumulator = accumulator
+        self.mapResult = mapResult
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == ResultType {
         let sink = ReduceSink(parent: self, observer: observer, cancel: cancel)
-        let subscription = self._source.subscribe(sink)
+        let subscription = source.subscribe(sink)
         return (sink: sink, subscription: subscription)
     }
 }
-
