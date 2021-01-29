@@ -8,21 +8,23 @@
 
 #if os(macOS)
 
-    import Cocoa
-    import RxSwift
+import RxSwift
+import Cocoa
 
-    public extension Reactive where Base: NSSlider {
-        /// Reactive wrapper for `value` property.
-        var value: ControlProperty<Double> {
-            base.rx.controlProperty(
-                getter: { control -> Double in
-                    control.doubleValue
-                },
-                setter: { control, value in
-                    control.doubleValue = value
-                }
-            )
-        }
+extension Reactive where Base: NSSlider {
+    
+    /// Reactive wrapper for `value` property.
+    public var value: ControlProperty<Double> {
+        return self.base.rx.controlProperty(
+            getter: { control -> Double in
+                return control.doubleValue
+            },
+            setter: { control, value in
+                control.doubleValue = value
+            }
+        )
     }
+    
+}
 
 #endif

@@ -58,7 +58,7 @@ enum GitHub {
             .requestParameters(parameters: headers ?? [:], encoding: URLEncoding.default)
         }
 
-        // screct = "3bf810107e9a41f5641c6eb8eda982382ebc21d6"
+
         var headers: [String: String]? =
             [
                 "client_id": clientID,
@@ -68,6 +68,27 @@ enum GitHub {
                 "state": UUID().uuidString,
             ]
         // https://github.com/login/oauth/authorize?redirect_uri=networksample://redirect&allow_signup=false&scpoe=repo,user:email&state=abcd
+        var fullURL: URL? {
+            guard let headerDict = headers else { return nil }
+            var combinePath: String = baseURL.absoluteString + path
+            var argCnt = 0
+            combinePath += ""
+            for (key, val) in headerDict {
+                if argCnt == 0 {
+                    combinePath += "?"
+                } else {
+                    combinePath += "&"
+                }
+                argCnt += 1
+                combinePath += "\(key)=\(val)"
+            }
+            guard let path_ = combinePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                  let url = URL(string: path_)
+            else {
+                return nil
+            }
+            return url
+        }
     }
 
     struct AccessToken: GitHubApiTargetType {

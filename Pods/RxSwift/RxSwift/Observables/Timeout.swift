@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Applies a timeout policy for each element in the observable sequence. If the next element isn't received within the specified timeout duration starting from its predecessor, a TimeoutError is propagated to the observer.
 
@@ -16,10 +17,9 @@ public extension ObservableType {
      - parameter scheduler: Scheduler to run the timeout timer on.
      - returns: An observable sequence with a `RxError.timeout` in case of a timeout.
      */
-    func timeout(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
-        -> Observable<Element>
-    {
-        Timeout(source: asObservable(), dueTime: dueTime, other: Observable.error(RxError.timeout), scheduler: scheduler)
+    public func timeout(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
+        -> Observable<Element> {
+            return Timeout(source: self.asObservable(), dueTime: dueTime, other: Observable.error(RxError.timeout), scheduler: scheduler)
     }
 
     /**
@@ -32,97 +32,96 @@ public extension ObservableType {
      - parameter scheduler: Scheduler to run the timeout timer on.
      - returns: The source sequence switching to the other sequence in case of a timeout.
      */
-    func timeout<Source: ObservableConvertibleType>(_ dueTime: RxTimeInterval, other: Source, scheduler: SchedulerType)
-        -> Observable<Element> where Element == Source.Element
-    {
-        Timeout(source: asObservable(), dueTime: dueTime, other: other.asObservable(), scheduler: scheduler)
+    public func timeout<Source: ObservableConvertibleType>(_ dueTime: RxTimeInterval, other: Source, scheduler: SchedulerType)
+        -> Observable<Element> where Element == Source.Element {
+            return Timeout(source: self.asObservable(), dueTime: dueTime, other: other.asObservable(), scheduler: scheduler)
     }
 }
 
-private final class TimeoutSink<Observer: ObserverType>: Sink<Observer>, LockOwnerType, ObserverType {
-    typealias Element = Observer.Element
+final private class TimeoutSink<Observer: ObserverType>: Sink<Observer>, LockOwnerType, ObserverType {
+    typealias Element = Observer.Element 
     typealias Parent = Timeout<Element>
+    
+    private let _parent: Parent
+    
+    let _lock = RecursiveLock()
 
-    private let parent: Parent
-
-    let lock = RecursiveLock()
-
-    private let timerD = SerialDisposable()
-    private let subscription = SerialDisposable()
-
-    private var id = 0
-    private var switched = false
-
+    private let _timerD = SerialDisposable()
+    private let _subscription = SerialDisposable()
+    
+    private var _id = 0
+    private var _switched = false
+    
     init(parent: Parent, observer: Observer, cancel: Cancelable) {
-        self.parent = parent
+        self._parent = parent
         super.init(observer: observer, cancel: cancel)
     }
-
+    
     func run() -> Disposable {
         let original = SingleAssignmentDisposable()
-        subscription.disposable = original
-
-        createTimeoutTimer()
-
-        original.setDisposable(parent.source.subscribe(self))
-
-        return Disposables.create(subscription, timerD)
+        self._subscription.disposable = original
+        
+        self._createTimeoutTimer()
+        
+        original.setDisposable(self._parent._source.subscribe(self))
+        
+        return Disposables.create(_subscription, _timerD)
     }
 
     func on(_ event: Event<Element>) {
         switch event {
         case .next:
             var onNextWins = false
-
-            lock.performLocked {
-                onNextWins = !self.switched
+            
+            self._lock.performLocked {
+                onNextWins = !self._switched
                 if onNextWins {
-                    self.id = self.id &+ 1
+                    self._id = self._id &+ 1
                 }
             }
-
+            
             if onNextWins {
-                forwardOn(event)
-                createTimeoutTimer()
+                self.forwardOn(event)
+                self._createTimeoutTimer()
             }
         case .error, .completed:
             var onEventWins = false
-
-            lock.performLocked {
-                onEventWins = !self.switched
+            
+            self._lock.performLocked {
+                onEventWins = !self._switched
                 if onEventWins {
-                    self.id = self.id &+ 1
+                    self._id = self._id &+ 1
                 }
             }
-
+            
             if onEventWins {
-                forwardOn(event)
-                dispose()
+                self.forwardOn(event)
+                self.dispose()
             }
         }
     }
-
-    private func createTimeoutTimer() {
-        if timerD.isDisposed {
+    
+    private func _createTimeoutTimer() {
+        if self._timerD.isDisposed {
             return
         }
-
+        
         let nextTimer = SingleAssignmentDisposable()
-        timerD.disposable = nextTimer
-
-        let disposeSchedule = parent.scheduler.scheduleRelative(id, dueTime: parent.dueTime) { state in
-
+        self._timerD.disposable = nextTimer
+        
+        let disposeSchedule = self._parent._scheduler.scheduleRelative(self._id, dueTime: self._parent._dueTime) { state in
+            
             var timerWins = false
-
-            self.lock.performLocked {
-                self.switched = (state == self.id)
-                timerWins = self.switched
+            
+            self._lock.performLocked {
+                self._switched = (state == self._id)
+                timerWins = self._switched
             }
-
+            
             if timerWins {
-                self.subscription.disposable = self.parent.other.subscribe(self.forwarder())
+                self._subscription.disposable = self._parent._other.subscribe(self.forwarder())
             }
-
+            
             return Disposables.create()
         }
 
@@ -130,19 +129,20 @@ private final class TimeoutSink<Observer: ObserverType>: Sink<Observer>, LockOwn
     }
 }
 
-private final class Timeout<Element>: Producer<Element> {
-    fileprivate let source: Observable<Element>
-    fileprivate let dueTime: RxTimeInterval
-    fileprivate let other: Observable<Element>
-    fileprivate let scheduler: SchedulerType
 
+final private class Timeout<Element>: Producer<Element> {
+    fileprivate let _source: Observable<Element>
+    fileprivate let _dueTime: RxTimeInterval
+    fileprivate let _other: Observable<Element>
+    fileprivate let _scheduler: SchedulerType
+    
     init(source: Observable<Element>, dueTime: RxTimeInterval, other: Observable<Element>, scheduler: SchedulerType) {
-        self.source = source
-        self.dueTime = dueTime
-        self.other = other
-        self.scheduler = scheduler
+        self._source = source
+        self._dueTime = dueTime
+        self._other = other
+        self._scheduler = scheduler
     }
-
+    
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
         let sink = TimeoutSink(parent: self, observer: observer, cancel: cancel)
         let subscription = sink.run()

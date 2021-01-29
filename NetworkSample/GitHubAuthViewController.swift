@@ -5,10 +5,13 @@
 // Copyright © 2021 Alien. All rights reserved.
 //
 
+import WebKit
 import RxCocoa
 import RxSwift
 import SnapKit
 import UIKit
+import RxWebKit
+import AuthenticationServices
 
 final class GitHubAuthViewController: UIViewController {
     private let bag = DisposeBag()
@@ -28,7 +31,7 @@ final class GitHubAuthViewController: UIViewController {
         web.snp.makeConstraints { make in
             make.top.equalTo(topBar.snp.bottom)
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(view.snp.bottom)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         return web
     }()
@@ -83,6 +86,24 @@ final class GitHubAuthViewController: UIViewController {
         topBar.cancelBtn.rx.tap.subscribe { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
         }.disposed(by: bag)
+        
+        webView.rx.decidePolicyNavigationAction.subscribe { ( webView: WKWebView, action: WKNavigationAction, handler: ((WKNavigationActionPolicy) -> Void)) in
+            dLog(webView.url?.scheme ?? "")
+            if let reqPath = action.request.url?.absoluteString,
+               let components = URLComponents(string: reqPath) {
+                let schcme = components.scheme ?? ""
+                let queryItems = components.queryItems
+                //dLog("Scheme:\(schcme)")
+                dLog(action.request.url?.absoluteString ?? "")
+                if schcme == "networksampledev" {
+                    handler(.cancel)
+                    return
+                    
+                }
+            }
+            
+            handler(.allow)
+        }.disposed(by: bag)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -106,10 +127,20 @@ final class GitHubAuthViewController: UIViewController {
             path += "\(key)=\(val)"
         }
         guard let path_ = path.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: path_)
+              let path_encode = path_.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: path_encode)
         else {
             return
         }
         webView.loadURL(url: url)
+    }
+}
+
+extension ASWebAuthenticationSession {
+    static func present(url: URL,from vc: ASWebAuthenticationPresentationContextProviding, resultHandler:@escaping ASWebAuthenticationSession.CompletionHandler) {
+        let session = ASWebAuthenticationSession(url: url, callbackURLScheme: nil, completionHandler: resultHandler)
+        session.presentationContextProvider = vc
+        session.prefersEphemeralWebBrowserSession = false
+        session.start()
     }
 }

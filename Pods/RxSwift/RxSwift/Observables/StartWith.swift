@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Prepends a sequence of values to an observable sequence.
 
@@ -15,14 +16,13 @@ public extension ObservableType {
      - parameter elements: Elements to prepend to the specified sequence.
      - returns: The source sequence prepended with the specified values.
      */
-    func startWith(_ elements: Element ...)
-        -> Observable<Element>
-    {
-        StartWith(source: asObservable(), elements: elements)
+    public func startWith(_ elements: Element ...)
+        -> Observable<Element> {
+            return StartWith(source: self.asObservable(), elements: elements)
     }
 }
 
-private final class StartWith<Element>: Producer<Element> {
+final private class StartWith<Element>: Producer<Element> {
     let elements: [Element]
     let source: Observable<Element>
 
@@ -33,10 +33,10 @@ private final class StartWith<Element>: Producer<Element> {
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
-        for e in elements {
+        for e in self.elements {
             observer.on(.next(e))
         }
 
-        return (sink: Disposables.create(), subscription: source.subscribe(observer))
+        return (sink: Disposables.create(), subscription: self.source.subscribe(observer))
     }
 }

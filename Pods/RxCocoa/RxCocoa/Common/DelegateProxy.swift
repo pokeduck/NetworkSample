@@ -33,11 +33,10 @@
         ///
         /// - parameter parentObject: Optional parent object that owns `DelegateProxy` as associated object.
         public init<Proxy: DelegateProxyType>(parentObject: ParentObject, delegateProxy: Proxy.Type)
-            where Proxy: DelegateProxy<ParentObject, Delegate>, Proxy.ParentObject == ParentObject, Proxy.Delegate == Delegate
-        {
-            _parentObject = parentObject
-            _currentDelegateFor = delegateProxy._currentDelegate
-            _setCurrentDelegateTo = delegateProxy._setCurrentDelegate
+            where Proxy: DelegateProxy<ParentObject, Delegate>, Proxy.ParentObject == ParentObject, Proxy.Delegate == Delegate {
+            self._parentObject = parentObject
+            self._currentDelegateFor = delegateProxy._currentDelegate
+            self._setCurrentDelegateTo = delegateProxy._setCurrentDelegate
 
             MainScheduler.ensureRunningOnMainThread()
             #if TRACE_RESOURCES
@@ -91,13 +90,14 @@
         open func sentMessage(_ selector: Selector) -> Observable<[Any]> {
             MainScheduler.ensureRunningOnMainThread()
 
-            let subject = _sentMessageForSelector[selector]
+            let subject = self._sentMessageForSelector[selector]
 
             if let subject = subject {
                 return subject.asObservable()
-            } else {
+            }
+            else {
                 let subject = MessageDispatcher(selector: selector, delegateProxy: self)
-                _sentMessageForSelector[selector] = subject
+                self._sentMessageForSelector[selector] = subject
                 return subject.asObservable()
             }
         }
@@ -147,13 +147,14 @@
         open func methodInvoked(_ selector: Selector) -> Observable<[Any]> {
             MainScheduler.ensureRunningOnMainThread()
 
-            let subject = _methodInvokedForSelector[selector]
+            let subject = self._methodInvokedForSelector[selector]
 
             if let subject = subject {
                 return subject.asObservable()
-            } else {
+            }
+            else {
                 let subject = MessageDispatcher(selector: selector, delegateProxy: self)
-                _methodInvokedForSelector[selector] = subject
+                self._methodInvokedForSelector[selector] = subject
                 return subject.asObservable()
             }
         }
@@ -161,31 +162,31 @@
         fileprivate func checkSelectorIsObservable(_ selector: Selector) {
             MainScheduler.ensureRunningOnMainThread()
 
-            if hasWiredImplementation(for: selector) {
+            if self.hasWiredImplementation(for: selector) {
                 print("⚠️ Delegate proxy is already implementing `\(selector)`, a more performant way of registering might exist.")
                 return
             }
 
-            if voidDelegateMethodsContain(selector) {
+            if self.voidDelegateMethodsContain(selector) {
                 return
             }
 
             // In case `_forwardToDelegate` is `nil`, it is assumed the check is being done prematurely.
-            if !(_forwardToDelegate?.responds(to: selector) ?? true) {
+            if !(self._forwardToDelegate?.responds(to: selector) ?? true) {
                 print("⚠️ Using delegate proxy dynamic interception method but the target delegate object doesn't respond to the requested selector. " +
                     "In case pure Swift delegate proxy is being used please use manual observing method by using`PublishSubject`s. " +
-                    " (selector: `\(selector)`, forwardToDelegate: `\(_forwardToDelegate ?? self)`)")
+                    " (selector: `\(selector)`, forwardToDelegate: `\(self._forwardToDelegate ?? self)`)")
             }
         }
 
         // proxy
 
-        override open func _sentMessage(_ selector: Selector, withArguments arguments: [Any]) {
-            _sentMessageForSelector[selector]?.on(.next(arguments))
+        open override func _sentMessage(_ selector: Selector, withArguments arguments: [Any]) {
+            self._sentMessageForSelector[selector]?.on(.next(arguments))
         }
 
-        override open func _methodInvoked(_ selector: Selector, withArguments arguments: [Any]) {
-            _methodInvokedForSelector[selector]?.on(.next(arguments))
+        open override func _methodInvoked(_ selector: Selector, withArguments arguments: [Any]) {
+            self._methodInvokedForSelector[selector]?.on(.next(arguments))
         }
 
         /// Returns reference of normal delegate that receives all forwarded messages
@@ -193,7 +194,7 @@
         ///
         /// - returns: Value of reference if set or nil.
         open func forwardToDelegate() -> Delegate? {
-            castOptionalOrFatalError(_forwardToDelegate)
+            return castOptionalOrFatalError(self._forwardToDelegate)
         }
 
         /// Sets reference of normal delegate that receives all forwarded messages
@@ -205,38 +206,38 @@
             #if DEBUG // 4.0 all configurations
                 MainScheduler.ensureRunningOnMainThread()
             #endif
-            _setForwardToDelegate(delegate, retainDelegate: retainDelegate)
+            self._setForwardToDelegate(delegate, retainDelegate: retainDelegate)
 
-            let sentSelectors: [Selector] = _sentMessageForSelector.values.filter { $0.hasObservers }.map { $0.selector }
-            let invokedSelectors: [Selector] = _methodInvokedForSelector.values.filter { $0.hasObservers }.map { $0.selector }
+            let sentSelectors: [Selector] = self._sentMessageForSelector.values.filter { $0.hasObservers }.map { $0.selector }
+            let invokedSelectors: [Selector] = self._methodInvokedForSelector.values.filter { $0.hasObservers }.map { $0.selector }
             let allUsedSelectors = sentSelectors + invokedSelectors
 
             for selector in Set(allUsedSelectors) {
-                checkSelectorIsObservable(selector)
+                self.checkSelectorIsObservable(selector)
             }
 
-            reset()
+            self.reset()
         }
 
         private func hasObservers(selector: Selector) -> Bool {
-            (_sentMessageForSelector[selector]?.hasObservers ?? false)
-                || (_methodInvokedForSelector[selector]?.hasObservers ?? false)
+            return (self._sentMessageForSelector[selector]?.hasObservers ?? false)
+                || (self._methodInvokedForSelector[selector]?.hasObservers ?? false)
         }
 
         override open func responds(to aSelector: Selector!) -> Bool {
-            super.responds(to: aSelector)
-                || (_forwardToDelegate?.responds(to: aSelector) ?? false)
-                || (voidDelegateMethodsContain(aSelector) && hasObservers(selector: aSelector))
+            return super.responds(to: aSelector)
+                || (self._forwardToDelegate?.responds(to: aSelector) ?? false)
+                || (self.voidDelegateMethodsContain(aSelector) && self.hasObservers(selector: aSelector))
         }
 
         fileprivate func reset() {
-            guard let parentObject = _parentObject else { return }
+            guard let parentObject = self._parentObject else { return }
 
-            let maybeCurrentDelegate = _currentDelegateFor(parentObject)
+            let maybeCurrentDelegate = self._currentDelegateFor(parentObject)
 
             if maybeCurrentDelegate === self {
-                _setCurrentDelegateTo(nil, parentObject)
-                _setCurrentDelegateTo(castOrFatalError(self), parentObject)
+                self._setCurrentDelegateTo(nil, parentObject)
+                self._setCurrentDelegateTo(castOrFatalError(self), parentObject)
             }
         }
 
@@ -251,6 +252,8 @@
                 _ = Resources.decrementTotal()
             #endif
         }
+    
+
     }
 
     private let mainScheduler = MainScheduler()
@@ -268,23 +271,23 @@
             self.dispatcher = dispatcher
             self.selector = selector
 
-            result = dispatcher
+            self.result = dispatcher
                 .do(onSubscribed: { weakDelegateProxy?.checkSelectorIsObservable(selector); weakDelegateProxy?.reset() }, onDispose: { weakDelegateProxy?.reset() })
                 .share()
-                .subscribe(on: mainScheduler)
+                .subscribeOn(mainScheduler)
         }
 
         var on: (Event<[Any]>) -> Void {
-            dispatcher.on
+            return self.dispatcher.on
         }
 
         var hasObservers: Bool {
-            dispatcher.hasObservers
+            return self.dispatcher.hasObservers
         }
 
         func asObservable() -> Observable<[Any]> {
-            result
+            return self.result
         }
     }
-
+    
 #endif

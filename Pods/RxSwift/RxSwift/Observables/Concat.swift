@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Concatenates the second observable sequence to `self` upon successful termination of `self`.
 
@@ -15,12 +16,12 @@ public extension ObservableType {
      - parameter second: Second observable sequence.
      - returns: An observable sequence that contains the elements of `self`, followed by those of the second sequence.
      */
-    func concat<Source: ObservableConvertibleType>(_ second: Source) -> Observable<Element> where Source.Element == Element {
-        Observable.concat([asObservable(), second.asObservable()])
+    public func concat<Source: ObservableConvertibleType>(_ second: Source) -> Observable<Element> where Source.Element == Element {
+        return Observable.concat([self.asObservable(), second.asObservable()])
     }
 }
 
-public extension ObservableType {
+extension ObservableType {
     /**
      Concatenates all observable sequences in the given sequence, as long as the previous observable sequence terminated successfully.
 
@@ -34,10 +35,9 @@ public extension ObservableType {
 
      - returns: An observable sequence that contains the elements of each given sequence, in sequential order.
      */
-    static func concat<Sequence: Swift.Sequence>(_ sequence: Sequence) -> Observable<Element>
-        where Sequence.Element == Observable<Element>
-    {
-        Concat(sources: sequence, count: nil)
+    public static func concat<Sequence: Swift.Sequence>(_ sequence: Sequence) -> Observable<Element>
+        where Sequence.Element == Observable<Element> {
+            return Concat(sources: sequence, count: nil)
     }
 
     /**
@@ -53,10 +53,9 @@ public extension ObservableType {
 
      - returns: An observable sequence that contains the elements of each given sequence, in sequential order.
      */
-    static func concat<Collection: Swift.Collection>(_ collection: Collection) -> Observable<Element>
-        where Collection.Element == Observable<Element>
-    {
-        Concat(sources: collection, count: Int64(collection.count))
+    public static func concat<Collection: Swift.Collection>(_ collection: Collection) -> Observable<Element>
+        where Collection.Element == Observable<Element> {
+            return Concat(sources: collection, count: Int64(collection.count))
     }
 
     /**
@@ -72,60 +71,61 @@ public extension ObservableType {
 
      - returns: An observable sequence that contains the elements of each given sequence, in sequential order.
      */
-    static func concat(_ sources: Observable<Element> ...) -> Observable<Element> {
-        Concat(sources: sources, count: Int64(sources.count))
+    public static func concat(_ sources: Observable<Element> ...) -> Observable<Element> {
+        return Concat(sources: sources, count: Int64(sources.count))
     }
 }
 
-private final class ConcatSink<Sequence: Swift.Sequence, Observer: ObserverType>:
-    TailRecursiveSink<Sequence, Observer>,
-    ObserverType where Sequence.Element: ObservableConvertibleType, Sequence.Element.Element == Observer.Element
-{
-    typealias Element = Observer.Element
-
+final private class ConcatSink<Sequence: Swift.Sequence, Observer: ObserverType>
+    : TailRecursiveSink<Sequence, Observer>
+    , ObserverType where Sequence.Element: ObservableConvertibleType, Sequence.Element.Element == Observer.Element {
+    typealias Element = Observer.Element 
+    
     override init(observer: Observer, cancel: Cancelable) {
         super.init(observer: observer, cancel: cancel)
     }
-
-    func on(_ event: Event<Element>) {
+    
+    func on(_ event: Event<Element>){
         switch event {
         case .next:
-            forwardOn(event)
+            self.forwardOn(event)
         case .error:
-            forwardOn(event)
-            dispose()
+            self.forwardOn(event)
+            self.dispose()
         case .completed:
-            schedule(.moveNext)
+            self.schedule(.moveNext)
         }
     }
 
     override func subscribeToNext(_ source: Observable<Element>) -> Disposable {
-        source.subscribe(self)
+        return source.subscribe(self)
     }
-
+    
     override func extract(_ observable: Observable<Element>) -> SequenceGenerator? {
         if let source = observable as? Concat<Sequence> {
-            return (source.sources.makeIterator(), source.count)
-        } else {
+            return (source._sources.makeIterator(), source._count)
+        }
+        else {
             return nil
         }
     }
 }
 
-private final class Concat<Sequence: Swift.Sequence>: Producer<Sequence.Element.Element> where Sequence.Element: ObservableConvertibleType {
+final private class Concat<Sequence: Swift.Sequence>: Producer<Sequence.Element.Element> where Sequence.Element: ObservableConvertibleType {
     typealias Element = Sequence.Element.Element
-
-    fileprivate let sources: Sequence
-    fileprivate let count: IntMax?
+    
+    fileprivate let _sources: Sequence
+    fileprivate let _count: IntMax?
 
     init(sources: Sequence, count: IntMax?) {
-        self.sources = sources
-        self.count = count
+        self._sources = sources
+        self._count = count
     }
-
+    
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
         let sink = ConcatSink<Sequence, Observer>(observer: observer, cancel: cancel)
-        let subscription = sink.run((sources.makeIterator(), count))
+        let subscription = sink.run((self._sources.makeIterator(), self._count))
         return (sink: sink, subscription: subscription)
     }
 }
+

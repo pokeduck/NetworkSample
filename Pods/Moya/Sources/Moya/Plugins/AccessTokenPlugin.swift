@@ -4,6 +4,7 @@ import Foundation
 
 /// A protocol for controlling the behavior of `AccessTokenPlugin`.
 public protocol AccessTokenAuthorizable {
+
     /// Represents the authorization header to use for requests.
     var authorizationType: AuthorizationType? { get }
 }
@@ -12,6 +13,7 @@ public protocol AccessTokenAuthorizable {
 
 /// An enum representing the header to use with an `AccessTokenPlugin`
 public enum AuthorizationType {
+
     /// The `"Basic"` header.
     case basic
 
@@ -25,7 +27,7 @@ public enum AuthorizationType {
         switch self {
         case .basic: return "Basic"
         case .bearer: return "Bearer"
-        case let .custom(customValue): return customValue
+        case .custom(let customValue): return customValue
         }
     }
 }
@@ -59,6 +61,7 @@ extension AuthorizationType: Equatable {
 
  */
 public struct AccessTokenPlugin: PluginType {
+
     public typealias TokenClosure = (AuthorizationType) -> String
 
     /// A closure returning the access token to be applied in the header.
@@ -83,9 +86,10 @@ public struct AccessTokenPlugin: PluginType {
      - returns: The modified `URLRequest`.
      */
     public func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
+
         guard let authorizable = target as? AccessTokenAuthorizable,
-              let authorizationType = authorizable.authorizationType
-        else { return request }
+            let authorizationType = authorizable.authorizationType
+            else { return request }
 
         var request = request
 

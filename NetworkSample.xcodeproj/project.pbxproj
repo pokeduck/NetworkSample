@@ -10,6 +10,8 @@
 		6C346E54104F3D9A54E3CA11 /* Pods_NetworkSampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F635B16739223DEFCD13815 /* Pods_NetworkSampleTests.framework */; };
 		A6DF6DD4C6CC743B8927A9BE /* Pods_NetworkSample_NetworkSampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D98067ACE31010CE8416EAE /* Pods_NetworkSample_NetworkSampleUITests.framework */; };
 		C44663F30AD9B42900A1E07F /* Pods_NetworkSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F1BCE3FFE3D26C469CB5607 /* Pods_NetworkSample.framework */; };
+		E085535525C28D8E00C0B1E4 /* aoe.aiff in Resources */ = {isa = PBXBuildFile; fileRef = E085535425C28D8E00C0B1E4 /* aoe.aiff */; };
+		E085536725C291C800C0B1E4 /* hoho.wav in Resources */ = {isa = PBXBuildFile; fileRef = E085536625C291C800C0B1E4 /* hoho.wav */; };
 		E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090900B25BFF07D0060B70A /* AppDelegate.swift */; };
 		E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090900D25BFF07D0060B70A /* SceneDelegate.swift */; };
 		E090901025BFF07D0060B70A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090900F25BFF07D0060B70A /* ViewController.swift */; };
@@ -55,6 +57,8 @@
 		87A941C2E3DFF092031C67FF /* Pods-NetworkSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSample.release.xcconfig"; path = "Target Support Files/Pods-NetworkSample/Pods-NetworkSample.release.xcconfig"; sourceTree = "<group>"; };
 		AD1058CA15D21454C14EFC3F /* Pods-NetworkSampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3D284119487818528F77848 /* Pods-NetworkSampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		E085535425C28D8E00C0B1E4 /* aoe.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = aoe.aiff; sourceTree = SOURCE_ROOT; };
+		E085536625C291C800C0B1E4 /* hoho.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hoho.wav; sourceTree = "<group>"; };
 		E090900825BFF07D0060B70A /* NetworkSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E090900B25BFF07D0060B70A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E090900D25BFF07D0060B70A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -166,6 +170,8 @@
 				E09090B825C146710060B70A /* DebugLog.swift */,
 				E090908E25C014920060B70A /* AccessToken.json */,
 				E09090B325C11BF80060B70A /* GitHubUser.json */,
+				E085536625C291C800C0B1E4 /* hoho.wav */,
+				E085535425C28D8E00C0B1E4 /* aoe.aiff */,
 				E090901125BFF07D0060B70A /* Main.storyboard */,
 				E090901425BFF07D0060B70A /* Assets.xcassets */,
 				E090901625BFF07D0060B70A /* LaunchScreen.storyboard */,
@@ -200,7 +206,6 @@
 			buildConfigurationList = E090903225BFF07E0060B70A /* Build configuration list for PBXNativeTarget "NetworkSample" */;
 			buildPhases = (
 				FCEC3248B7122E8C58B9F2AD /* [CP] Check Pods Manifest.lock */,
-				E09090ED25C16BB10060B70A /* ShellScript */,
 				E090900425BFF07D0060B70A /* Sources */,
 				E090900525BFF07D0060B70A /* Frameworks */,
 				E090900625BFF07D0060B70A /* Resources */,
@@ -301,11 +306,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E085536725C291C800C0B1E4 /* hoho.wav in Resources */,
 				E090901825BFF07D0060B70A /* LaunchScreen.storyboard in Resources */,
 				E090901525BFF07D0060B70A /* Assets.xcassets in Resources */,
 				E09090B425C11BF80060B70A /* GitHubUser.json in Resources */,
 				E090901325BFF07D0060B70A /* Main.storyboard in Resources */,
 				E090908F25C014920060B70A /* AccessToken.json in Resources */,
+				E085535525C28D8E00C0B1E4 /* aoe.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,23 +376,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		E09090ED25C16BB10060B70A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
 		};
 		E9F94F4F08523347F8BAF3F0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -635,15 +625,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = V9WLWW5XKJ;
 				INFOPLIST_FILE = NetworkSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = debug.idv.pokeduck.NetworkSample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.begonia.dev.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = FGStagingDev;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -655,15 +648,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = V9WLWW5XKJ;
 				INFOPLIST_FILE = NetworkSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = debug.idv.pokeduck.NetworkSample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.begonia.dev.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = FGStagingDev;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

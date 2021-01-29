@@ -1,0 +1,8 @@
+{
+    "Simulator Target Bundle": "debug.idv.pokeduck.NetworkSample",
+    "aps":{
+        "alert":"This is push notification.",
+        "sound":"hoho.wav",
+        "badge":3
+    }
+}

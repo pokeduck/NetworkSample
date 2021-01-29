@@ -11,7 +11,7 @@ import Foundation
 /// Converts historical virtual time into real time.
 ///
 /// Since historical virtual time is also measured in `Date`, this converter is identity function.
-public struct HistoricalSchedulerTimeConverter: VirtualTimeConverterType {
+public struct HistoricalSchedulerTimeConverter : VirtualTimeConverterType {
     /// Virtual time unit used that represents ticks of virtual clock.
     public typealias VirtualTimeUnit = RxTime
 
@@ -21,36 +21,36 @@ public struct HistoricalSchedulerTimeConverter: VirtualTimeConverterType {
     /// Returns identical value of argument passed because historical virtual time is equal to real time, just
     /// decoupled from local machine clock.
     public func convertFromVirtualTime(_ virtualTime: VirtualTimeUnit) -> RxTime {
-        virtualTime
+        return virtualTime
     }
 
     /// Returns identical value of argument passed because historical virtual time is equal to real time, just
     /// decoupled from local machine clock.
     public func convertToVirtualTime(_ time: RxTime) -> VirtualTimeUnit {
-        time
+        return time
     }
 
     /// Returns identical value of argument passed because historical virtual time is equal to real time, just
     /// decoupled from local machine clock.
     public func convertFromVirtualTimeInterval(_ virtualTimeInterval: VirtualTimeIntervalUnit) -> TimeInterval {
-        virtualTimeInterval
+        return virtualTimeInterval
     }
 
     /// Returns identical value of argument passed because historical virtual time is equal to real time, just
     /// decoupled from local machine clock.
     public func convertToVirtualTimeInterval(_ timeInterval: TimeInterval) -> VirtualTimeIntervalUnit {
-        timeInterval
+        return timeInterval
     }
 
     /**
-      Offsets `Date` by time interval.
-
-      - parameter time: Time.
-      - parameter timeInterval: Time interval offset.
-      - returns: Time offsetted by time interval.
-     */
+     Offsets `Date` by time interval.
+     
+     - parameter time: Time.
+     - parameter timeInterval: Time interval offset.
+     - returns: Time offsetted by time interval.
+    */
     public func offsetVirtualTime(_ time: VirtualTimeUnit, offset: VirtualTimeIntervalUnit) -> VirtualTimeUnit {
-        time.addingTimeInterval(offset)
+        return time.addingTimeInterval(offset)
     }
 
     /// Compares two `Date`s.

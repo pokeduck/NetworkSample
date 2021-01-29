@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Returns a non-terminating observable sequence, which can be used to denote an infinite duration.
 
@@ -14,13 +15,13 @@ public extension ObservableType {
 
      - returns: An observable sequence whose observers will never get called.
      */
-    static func never() -> Observable<Element> {
-        NeverProducer()
+    public static func never() -> Observable<Element> {
+        return NeverProducer()
     }
 }
 
-private final class NeverProducer<Element>: Producer<Element> {
+final private class NeverProducer<Element>: Producer<Element> {
     override func subscribe<Observer: ObserverType>(_ observer: Observer) -> Disposable where Observer.Element == Element {
-        Disposables.create()
+        return Disposables.create()
     }
 }

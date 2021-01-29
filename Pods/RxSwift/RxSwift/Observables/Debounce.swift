@@ -6,7 +6,8 @@
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Ignores elements from an observable sequence which are followed by another element within a specified relative time duration, using the specified scheduler to run throttling timers.
 
@@ -16,98 +17,96 @@ public extension ObservableType {
      - parameter scheduler: Scheduler to run the throttle timers on.
      - returns: The throttled sequence.
      */
-    func debounce(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
-        -> Observable<Element>
-    {
-        Debounce(source: asObservable(), dueTime: dueTime, scheduler: scheduler)
+    public func debounce(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
+        -> Observable<Element> {
+            return Debounce(source: self.asObservable(), dueTime: dueTime, scheduler: scheduler)
     }
 }
 
-private final class DebounceSink<Observer: ObserverType>:
-    Sink<Observer>,
-    ObserverType,
-    LockOwnerType,
-    SynchronizedOnType
-{
-    typealias Element = Observer.Element
+final private class DebounceSink<Observer: ObserverType>
+    : Sink<Observer>
+    , ObserverType
+    , LockOwnerType
+    , SynchronizedOnType {
+    typealias Element = Observer.Element 
     typealias ParentType = Debounce<Element>
 
-    private let parent: ParentType
+    private let _parent: ParentType
 
-    let lock = RecursiveLock()
+    let _lock = RecursiveLock()
 
     // state
-    private var id = 0 as UInt64
-    private var value: Element?
+    private var _id = 0 as UInt64
+    private var _value: Element?
 
     let cancellable = SerialDisposable()
 
     init(parent: ParentType, observer: Observer, cancel: Cancelable) {
-        self.parent = parent
+        self._parent = parent
 
         super.init(observer: observer, cancel: cancel)
     }
 
     func run() -> Disposable {
-        let subscription = parent.source.subscribe(self)
+        let subscription = self._parent._source.subscribe(self)
 
         return Disposables.create(subscription, cancellable)
     }
 
     func on(_ event: Event<Element>) {
-        synchronizedOn(event)
+        self.synchronizedOn(event)
     }
 
-    func synchronized_on(_ event: Event<Element>) {
+    func _synchronized_on(_ event: Event<Element>) {
         switch event {
-        case let .next(element):
-            id = id &+ 1
-            let currentId = id
-            value = element
+        case .next(let element):
+            self._id = self._id &+ 1
+            let currentId = self._id
+            self._value = element
 
-            let scheduler = parent.scheduler
-            let dueTime = parent.dueTime
+
+            let scheduler = self._parent._scheduler
+            let dueTime = self._parent._dueTime
 
             let d = SingleAssignmentDisposable()
-            cancellable.disposable = d
-            d.setDisposable(scheduler.scheduleRelative(currentId, dueTime: dueTime, action: propagate))
+            self.cancellable.disposable = d
+            d.setDisposable(scheduler.scheduleRelative(currentId, dueTime: dueTime, action: self.propagate))
         case .error:
-            value = nil
-            forwardOn(event)
-            dispose()
+            self._value = nil
+            self.forwardOn(event)
+            self.dispose()
         case .completed:
-            if let value = self.value {
-                self.value = nil
-                forwardOn(.next(value))
+            if let value = self._value {
+                self._value = nil
+                self.forwardOn(.next(value))
             }
-            forwardOn(.completed)
-            dispose()
+            self.forwardOn(.completed)
+            self.dispose()
         }
     }
 
     func propagate(_ currentId: UInt64) -> Disposable {
-        lock.performLocked {
-            let originalValue = self.value
+        self._lock.lock(); defer { self._lock.unlock() } // {
+        let originalValue = self._value
 
-            if let value = originalValue, self.id == currentId {
-                self.value = nil
-                self.forwardOn(.next(value))
-            }
-
-            return Disposables.create()
+        if let value = originalValue, self._id == currentId {
+            self._value = nil
+            self.forwardOn(.next(value))
         }
+        // }
+        return Disposables.create()
     }
 }
 
-private final class Debounce<Element>: Producer<Element> {
-    fileprivate let source: Observable<Element>
-    fileprivate let dueTime: RxTimeInterval
-    fileprivate let scheduler: SchedulerType
+final private class Debounce<Element>: Producer<Element> {
+    fileprivate let _source: Observable<Element>
+    fileprivate let _dueTime: RxTimeInterval
+    fileprivate let _scheduler: SchedulerType
 
     init(source: Observable<Element>, dueTime: RxTimeInterval, scheduler: SchedulerType) {
-        self.source = source
-        self.dueTime = dueTime
-        self.scheduler = scheduler
+        self._source = source
+        self._dueTime = dueTime
+        self._scheduler = scheduler
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
@@ -115,4 +114,5 @@ private final class Debounce<Element>: Producer<Element> {
         let subscription = sink.run()
         return (sink: sink, subscription: subscription)
     }
+    
 }

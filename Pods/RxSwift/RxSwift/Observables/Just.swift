@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
     /**
      Returns an observable sequence that contains a single element.
 
@@ -15,8 +15,8 @@ public extension ObservableType {
      - parameter element: Single element in the resulting observable sequence.
      - returns: An observable sequence containing the single specified element.
      */
-    static func just(_ element: Element) -> Observable<Element> {
-        Just(element: element)
+    public static func just(_ element: Element) -> Observable<Element> {
+        return Just(element: element)
     }
 
     /**
@@ -28,24 +28,24 @@ public extension ObservableType {
      - parameter scheduler: Scheduler to send the single element on.
      - returns: An observable sequence containing the single specified element.
      */
-    static func just(_ element: Element, scheduler: ImmediateSchedulerType) -> Observable<Element> {
-        JustScheduled(element: element, scheduler: scheduler)
+    public static func just(_ element: Element, scheduler: ImmediateSchedulerType) -> Observable<Element> {
+        return JustScheduled(element: element, scheduler: scheduler)
     }
 }
 
-private final class JustScheduledSink<Observer: ObserverType>: Sink<Observer> {
+final private class JustScheduledSink<Observer: ObserverType>: Sink<Observer> {
     typealias Parent = JustScheduled<Observer.Element>
 
-    private let parent: Parent
+    private let _parent: Parent
 
     init(parent: Parent, observer: Observer, cancel: Cancelable) {
-        self.parent = parent
+        self._parent = parent
         super.init(observer: observer, cancel: cancel)
     }
 
     func run() -> Disposable {
-        let scheduler = parent.scheduler
-        return scheduler.schedule(parent.element) { element in
+        let scheduler = self._parent._scheduler
+        return scheduler.schedule(self._parent._element) { element in
             self.forwardOn(.next(element))
             return scheduler.schedule(()) { _ in
                 self.forwardOn(.completed)
@@ -56,13 +56,13 @@ private final class JustScheduledSink<Observer: ObserverType>: Sink<Observer> {
     }
 }
 
-private final class JustScheduled<Element>: Producer<Element> {
-    fileprivate let scheduler: ImmediateSchedulerType
-    fileprivate let element: Element
+final private class JustScheduled<Element>: Producer<Element> {
+    fileprivate let _scheduler: ImmediateSchedulerType
+    fileprivate let _element: Element
 
     init(element: Element, scheduler: ImmediateSchedulerType) {
-        self.scheduler = scheduler
-        self.element = element
+        self._scheduler = scheduler
+        self._element = element
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
@@ -72,15 +72,15 @@ private final class JustScheduled<Element>: Producer<Element> {
     }
 }
 
-private final class Just<Element>: Producer<Element> {
-    private let element: Element
-
+final private class Just<Element>: Producer<Element> {
+    private let _element: Element
+    
     init(element: Element) {
-        self.element = element
+        self._element = element
     }
-
+    
     override func subscribe<Observer: ObserverType>(_ observer: Observer) -> Disposable where Observer.Element == Element {
-        observer.on(.next(element))
+        observer.on(.next(self._element))
         observer.on(.completed)
         return Disposables.create()
     }

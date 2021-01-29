@@ -6,7 +6,8 @@
 //  Copyright © 2017 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Enumerates the elements of an observable sequence.
 
@@ -14,47 +15,47 @@ public extension ObservableType {
 
      - returns: An observable sequence that contains tuples of source sequence elements and their indexes.
      */
-    func enumerated()
-        -> Observable<(index: Int, element: Element)>
-    {
-        Enumerated(source: asObservable())
+    public func enumerated()
+        -> Observable<(index: Int, element: Element)> {
+        return Enumerated(source: self.asObservable())
     }
 }
 
-private final class EnumeratedSink<Element, Observer: ObserverType>: Sink<Observer>, ObserverType where Observer.Element == (index: Int, element: Element) {
+final private class EnumeratedSink<Element, Observer: ObserverType>: Sink<Observer>, ObserverType where Observer.Element == (index: Int, element: Element) {
     var index = 0
-
+    
     func on(_ event: Event<Element>) {
         switch event {
-        case let .next(value):
+        case .next(let value):
             do {
-                let nextIndex = try incrementChecked(&index)
+                let nextIndex = try incrementChecked(&self.index)
                 let next = (index: nextIndex, element: value)
-                forwardOn(.next(next))
-            } catch let e {
+                self.forwardOn(.next(next))
+            }
+            catch let e {
                 self.forwardOn(.error(e))
                 self.dispose()
             }
         case .completed:
-            forwardOn(.completed)
-            dispose()
-        case let .error(error):
-            forwardOn(.error(error))
-            dispose()
+            self.forwardOn(.completed)
+            self.dispose()
+        case .error(let error):
+            self.forwardOn(.error(error))
+            self.dispose()
         }
     }
 }
 
-private final class Enumerated<Element>: Producer<(index: Int, element: Element)> {
-    private let source: Observable<Element>
+final private class Enumerated<Element>: Producer<(index: Int, element: Element)> {
+    private let _source: Observable<Element>
 
     init(source: Observable<Element>) {
-        self.source = source
+        self._source = source
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == (index: Int, element: Element) {
         let sink = EnumeratedSink<Element, Observer>(observer: observer, cancel: cancel)
-        let subscription = source.subscribe(sink)
+        let subscription = self._source.subscribe(sink)
         return (sink: sink, subscription: subscription)
     }
 }

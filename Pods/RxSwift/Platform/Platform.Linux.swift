@@ -8,13 +8,15 @@
 
 #if os(Linux)
 
-    import Foundation
+    import class Foundation.Thread
 
     extension Thread {
+
         static func setThreadLocalStorageValue<T: AnyObject>(_ value: T?, forKey key: String) {
             if let newValue = value {
                 Thread.current.threadDictionary[key] = newValue
-            } else {
+            }
+            else {
                 Thread.current.threadDictionary[key] = nil
             }
         }

@@ -6,29 +6,25 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import RxRelay
 import RxSwift
+import RxRelay
 
 private let errorMessage = "`drive*` family of methods can be only called from `MainThread`.\n" +
-    "This is required to ensure that the last replayed `Driver` element is delivered on `MainThread`.\n"
+"This is required to ensure that the last replayed `Driver` element is delivered on `MainThread`.\n"
 
-public extension SharedSequenceConvertibleType where SharingStrategy == DriverSharingStrategy {
+extension SharedSequenceConvertibleType where SharingStrategy == DriverSharingStrategy {
     /**
-     Creates new subscription and sends elements to observer.
-     This method can be only called from `MainThread`.
+    Creates new subscription and sends elements to observer.
+    This method can be only called from `MainThread`.
 
-     In this form it's equivalent to `subscribe` method, but it communicates intent better.
+    In this form it's equivalent to `subscribe` method, but it communicates intent better.
 
-     - parameter observer: Observer that receives events.
-     - returns: Disposable object that can be used to unsubscribe the observer from the subject.
-     */
-    func drive<Observer: ObserverType>(_ observers: Observer...) -> Disposable where Observer.Element == Element {
+    - parameter observer: Observer that receives events.
+    - returns: Disposable object that can be used to unsubscribe the observer from the subject.
+    */
+    public func drive<Observer: ObserverType>(_ observer: Observer) -> Disposable where Observer.Element == Element {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return asSharedSequence()
-            .asObservable()
-            .subscribe { e in
-                observers.forEach { $0.on(e) }
-            }
+        return self.asSharedSequence().asObservable().subscribe(observer)
     }
 
     /**
@@ -40,27 +36,22 @@ public extension SharedSequenceConvertibleType where SharingStrategy == DriverSh
      - parameter observer: Observer that receives events.
      - returns: Disposable object that can be used to unsubscribe the observer from the subject.
      */
-    func drive<Observer: ObserverType>(_ observers: Observer...) -> Disposable where Observer.Element == Element? {
+    public func drive<Observer: ObserverType>(_ observer: Observer) -> Disposable where Observer.Element == Element? {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return asSharedSequence()
-            .asObservable()
-            .map { $0 as Element? }
-            .subscribe { e in
-                observers.forEach { $0.on(e) }
-            }
+        return self.asSharedSequence().asObservable().map { $0 as Element? }.subscribe(observer)
     }
 
     /**
-     Creates new subscription and sends elements to `BehaviorRelay`.
-     This method can be only called from `MainThread`.
+    Creates new subscription and sends elements to `BehaviorRelay`.
+    This method can be only called from `MainThread`.
 
-     - parameter relay: Target relay for sequence elements.
-     - returns: Disposable object that can be used to unsubscribe the observer from the relay.
-     */
-    func drive(_ relays: BehaviorRelay<Element>...) -> Disposable {
+    - parameter relay: Target relay for sequence elements.
+    - returns: Disposable object that can be used to unsubscribe the observer from the relay.
+    */
+    public func drive(_ relay: BehaviorRelay<Element>) -> Disposable {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return drive(onNext: { e in
-            relays.forEach { $0.accept(e) }
+        return self.drive(onNext: { e in
+            relay.accept(e)
         })
     }
 
@@ -71,99 +62,61 @@ public extension SharedSequenceConvertibleType where SharingStrategy == DriverSh
      - parameter relay: Target relay for sequence elements.
      - returns: Disposable object that can be used to unsubscribe the observer from the relay.
      */
-    func drive(_ relays: BehaviorRelay<Element?>...) -> Disposable {
+    public func drive(_ relay: BehaviorRelay<Element?>) -> Disposable {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return drive(onNext: { e in
-            relays.forEach { $0.accept(e) }
+        return self.drive(onNext: { e in
+            relay.accept(e)
         })
     }
 
     /**
-     Creates new subscription and sends elements to `ReplayRelay`.
-     This method can be only called from `MainThread`.
+    Subscribes to observable sequence using custom binder function.
+    This method can be only called from `MainThread`.
 
-     - parameter relay: Target relay for sequence elements.
-     - returns: Disposable object that can be used to unsubscribe the observer from the relay.
-     */
-    func drive(_ relays: ReplayRelay<Element>...) -> Disposable {
+    - parameter with: Function used to bind elements from `self`.
+    - returns: Object representing subscription.
+    */
+    public func drive<Result>(_ transformation: (Observable<Element>) -> Result) -> Result {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return drive(onNext: { e in
-            relays.forEach { $0.accept(e) }
-        })
+        return transformation(self.asObservable())
     }
 
     /**
-     Creates new subscription and sends elements to `ReplayRelay`.
-     This method can be only called from `MainThread`.
+    Subscribes to observable sequence using custom binder function and final parameter passed to binder function
+    after `self` is passed.
 
-     - parameter relay: Target relay for sequence elements.
-     - returns: Disposable object that can be used to unsubscribe the observer from the relay.
-     */
-    func drive(_ relays: ReplayRelay<Element?>...) -> Disposable {
+        public func drive<R1, R2>(with: Self -> R1 -> R2, curriedArgument: R1) -> R2 {
+            return with(self)(curriedArgument)
+        }
+
+    This method can be only called from `MainThread`.
+
+    - parameter with: Function used to bind elements from `self`.
+    - parameter curriedArgument: Final argument passed to `binder` to finish binding process.
+    - returns: Object representing subscription.
+    */
+    public func drive<R1, R2>(_ with: (Observable<Element>) -> (R1) -> R2, curriedArgument: R1) -> R2 {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return drive(onNext: { e in
-            relays.forEach { $0.accept(e) }
-        })
+        return with(self.asObservable())(curriedArgument)
     }
-
+    
     /**
-     Subscribes to observable sequence using custom binder function.
-     This method can be only called from `MainThread`.
-
-     - parameter with: Function used to bind elements from `self`.
-     - returns: Object representing subscription.
-     */
-    func drive<Result>(_ transformation: (Observable<Element>) -> Result) -> Result {
+    Subscribes an element handler, a completion handler and disposed handler to an observable sequence.
+    This method can be only called from `MainThread`.
+    
+    Error callback is not exposed because `Driver` can't error out.
+    
+    - parameter onNext: Action to invoke for each element in the observable sequence.
+    - parameter onCompleted: Action to invoke upon graceful termination of the observable sequence.
+    gracefully completed, errored, or if the generation is canceled by disposing subscription)
+    - parameter onDisposed: Action to invoke upon any type of termination of sequence (if the sequence has
+    gracefully completed, errored, or if the generation is canceled by disposing subscription)
+    - returns: Subscription object used to unsubscribe from the observable sequence.
+    */
+    public func drive(onNext: ((Element) -> Void)? = nil, onCompleted: (() -> Void)? = nil, onDisposed: (() -> Void)? = nil) -> Disposable {
         MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return transformation(asObservable())
-    }
-
-    /**
-     Subscribes to observable sequence using custom binder function and final parameter passed to binder function
-     after `self` is passed.
-
-         public func drive<R1, R2>(with: Self -> R1 -> R2, curriedArgument: R1) -> R2 {
-             return with(self)(curriedArgument)
-         }
-
-     This method can be only called from `MainThread`.
-
-     - parameter with: Function used to bind elements from `self`.
-     - parameter curriedArgument: Final argument passed to `binder` to finish binding process.
-     - returns: Object representing subscription.
-     */
-    func drive<R1, R2>(_ with: (Observable<Element>) -> (R1) -> R2, curriedArgument: R1) -> R2 {
-        MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return with(asObservable())(curriedArgument)
-    }
-
-    /**
-     Subscribes an element handler, a completion handler and disposed handler to an observable sequence.
-     This method can be only called from `MainThread`.
-
-     Error callback is not exposed because `Driver` can't error out.
-
-     - parameter onNext: Action to invoke for each element in the observable sequence.
-     - parameter onCompleted: Action to invoke upon graceful termination of the observable sequence.
-     gracefully completed, errored, or if the generation is canceled by disposing subscription)
-     - parameter onDisposed: Action to invoke upon any type of termination of sequence (if the sequence has
-     gracefully completed, errored, or if the generation is canceled by disposing subscription)
-     - returns: Subscription object used to unsubscribe from the observable sequence.
-     */
-    func drive(onNext: ((Element) -> Void)? = nil, onCompleted: (() -> Void)? = nil, onDisposed: (() -> Void)? = nil) -> Disposable {
-        MainScheduler.ensureRunningOnMainThread(errorMessage: errorMessage)
-        return asObservable().subscribe(onNext: onNext, onCompleted: onCompleted, onDisposed: onDisposed)
-    }
-
-    /**
-     Subscribes to this `Driver` with a no-op.
-     This method can be only called from `MainThread`.
-
-     - note: This is an alias of `drive(onNext: nil, onCompleted: nil, onDisposed: nil)` used to fix an ambiguity bug in Swift: https://bugs.swift.org/browse/SR-13657
-
-     - returns: Subscription object used to unsubscribe from the observable sequence.
-     */
-    func drive() -> Disposable {
-        drive(onNext: nil, onCompleted: nil, onDisposed: nil)
+        return self.asObservable().subscribe(onNext: onNext, onCompleted: onCompleted, onDisposed: onDisposed)
     }
 }
+
+

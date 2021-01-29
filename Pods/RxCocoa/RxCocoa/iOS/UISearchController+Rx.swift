@@ -7,51 +7,53 @@
 //
 
 #if os(iOS)
-
+    
     import RxSwift
     import UIKit
-
-    public extension Reactive where Base: UISearchController {
+    
+    @available(iOS 8.0, *)
+    extension Reactive where Base: UISearchController {
         /// Reactive wrapper for `delegate`.
         /// For more information take a look at `DelegateProxyType` protocol documentation.
-        var delegate: DelegateProxy<UISearchController, UISearchControllerDelegate> {
-            RxSearchControllerDelegateProxy.proxy(for: base)
+        public var delegate: DelegateProxy<UISearchController, UISearchControllerDelegate> {
+            return RxSearchControllerDelegateProxy.proxy(for: base)
         }
 
         /// Reactive wrapper for `delegate` message.
-        var didDismiss: Observable<Void> {
-            delegate
-                .methodInvoked(#selector(UISearchControllerDelegate.didDismissSearchController(_:)))
+        public var didDismiss: Observable<Void> {
+            return delegate
+                .methodInvoked( #selector(UISearchControllerDelegate.didDismissSearchController(_:)))
                 .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
-        var didPresent: Observable<Void> {
-            delegate
+        public var didPresent: Observable<Void> {
+            return delegate
                 .methodInvoked(#selector(UISearchControllerDelegate.didPresentSearchController(_:)))
                 .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
-        var present: Observable<Void> {
-            delegate
-                .methodInvoked(#selector(UISearchControllerDelegate.presentSearchController(_:)))
+        public var present: Observable<Void> {
+            return delegate
+                .methodInvoked( #selector(UISearchControllerDelegate.presentSearchController(_:)))
                 .map { _ in }
         }
 
         /// Reactive wrapper for `delegate` message.
-        var willDismiss: Observable<Void> {
-            delegate
+        public var willDismiss: Observable<Void> {
+            return delegate
                 .methodInvoked(#selector(UISearchControllerDelegate.willDismissSearchController(_:)))
                 .map { _ in }
         }
-
+        
         /// Reactive wrapper for `delegate` message.
-        var willPresent: Observable<Void> {
-            delegate
-                .methodInvoked(#selector(UISearchControllerDelegate.willPresentSearchController(_:)))
+        public var willPresent: Observable<Void> {
+            return delegate
+                .methodInvoked( #selector(UISearchControllerDelegate.willPresentSearchController(_:)))
                 .map { _ in }
         }
+        
     }
-
+    
 #endif

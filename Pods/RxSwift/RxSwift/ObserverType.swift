@@ -11,6 +11,9 @@ public protocol ObserverType {
     /// The type of elements in sequence that observer can observe.
     associatedtype Element
 
+    @available(*, deprecated, renamed: "Element")
+    typealias E = Element
+
     /// Notify observer about sequence event.
     ///
     /// - parameter event: Event that occurred.
@@ -18,22 +21,23 @@ public protocol ObserverType {
 }
 
 /// Convenience API extensions to provide alternate next, error, completed events
-public extension ObserverType {
+extension ObserverType {
+    
     /// Convenience method equivalent to `on(.next(element: Element))`
     ///
     /// - parameter element: Next element to send to observer(s)
-    func onNext(_ element: Element) {
-        on(.next(element))
+    public func onNext(_ element: Element) {
+        self.on(.next(element))
     }
-
+    
     /// Convenience method equivalent to `on(.completed)`
-    func onCompleted() {
-        on(.completed)
+    public func onCompleted() {
+        self.on(.completed)
     }
-
+    
     /// Convenience method equivalent to `on(.error(Swift.Error))`
     /// - parameter error: Swift.Error to send to observer(s)
-    func onError(_ error: Swift.Error) {
-        on(.error(error))
+    public func onError(_ error: Swift.Error) {
+        self.on(.error(error))
     }
 }

@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Time shifts the observable sequence by delaying the subscription with the specified relative time duration, using the specified scheduler to run timers.
 
@@ -16,41 +17,40 @@ public extension ObservableType {
      - parameter scheduler: Scheduler to run the subscription delay timer on.
      - returns: Time-shifted sequence.
      */
-    func delaySubscription(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
-        -> Observable<Element>
-    {
-        DelaySubscription(source: asObservable(), dueTime: dueTime, scheduler: scheduler)
+    public func delaySubscription(_ dueTime: RxTimeInterval, scheduler: SchedulerType)
+        -> Observable<Element> {
+        return DelaySubscription(source: self.asObservable(), dueTime: dueTime, scheduler: scheduler)
     }
 }
 
-private final class DelaySubscriptionSink<Observer: ObserverType>:
-    Sink<Observer>, ObserverType
-{
-    typealias Element = Observer.Element
-
+final private class DelaySubscriptionSink<Observer: ObserverType>
+    : Sink<Observer>, ObserverType {
+    typealias Element = Observer.Element 
+    
     func on(_ event: Event<Element>) {
-        forwardOn(event)
+        self.forwardOn(event)
         if event.isStopEvent {
-            dispose()
+            self.dispose()
         }
     }
+    
 }
 
-private final class DelaySubscription<Element>: Producer<Element> {
-    private let source: Observable<Element>
-    private let dueTime: RxTimeInterval
-    private let scheduler: SchedulerType
-
+final private class DelaySubscription<Element>: Producer<Element> {
+    private let _source: Observable<Element>
+    private let _dueTime: RxTimeInterval
+    private let _scheduler: SchedulerType
+    
     init(source: Observable<Element>, dueTime: RxTimeInterval, scheduler: SchedulerType) {
-        self.source = source
-        self.dueTime = dueTime
-        self.scheduler = scheduler
+        self._source = source
+        self._dueTime = dueTime
+        self._scheduler = scheduler
     }
-
+    
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Element {
         let sink = DelaySubscriptionSink(observer: observer, cancel: cancel)
-        let subscription = scheduler.scheduleRelative((), dueTime: dueTime) { _ in
-            self.source.subscribe(sink)
+        let subscription = self._scheduler.scheduleRelative((), dueTime: self._dueTime) { _ in
+            return self._source.subscribe(sink)
         }
 
         return (sink: sink, subscription: subscription)

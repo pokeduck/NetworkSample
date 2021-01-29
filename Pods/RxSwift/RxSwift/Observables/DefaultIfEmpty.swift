@@ -6,7 +6,8 @@
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Emits elements from the source observable sequence, or a default element if the source observable sequence is empty.
 
@@ -15,51 +16,51 @@ public extension ObservableType {
      - parameter default: Default element to be sent if the source does not emit any elements
      - returns: An observable sequence which emits default element end completes in case the original sequence is empty
      */
-    func ifEmpty(default: Element) -> Observable<Element> {
-        DefaultIfEmpty(source: asObservable(), default: `default`)
+    public func ifEmpty(default: Element) -> Observable<Element> {
+        return DefaultIfEmpty(source: self.asObservable(), default: `default`)
     }
 }
 
-private final class DefaultIfEmptySink<Observer: ObserverType>: Sink<Observer>, ObserverType {
-    typealias Element = Observer.Element
-    private let `default`: Element
-    private var isEmpty = true
-
+final private class DefaultIfEmptySink<Observer: ObserverType>: Sink<Observer>, ObserverType {
+    typealias Element = Observer.Element 
+    private let _default: Element
+    private var _isEmpty = true
+    
     init(default: Element, observer: Observer, cancel: Cancelable) {
-        self.default = `default`
+        self._default = `default`
         super.init(observer: observer, cancel: cancel)
     }
-
+    
     func on(_ event: Event<Element>) {
         switch event {
         case .next:
-            isEmpty = false
-            forwardOn(event)
+            self._isEmpty = false
+            self.forwardOn(event)
         case .error:
-            forwardOn(event)
-            dispose()
+            self.forwardOn(event)
+            self.dispose()
         case .completed:
-            if isEmpty {
-                forwardOn(.next(self.default))
+            if self._isEmpty {
+                self.forwardOn(.next(self._default))
             }
-            forwardOn(.completed)
-            dispose()
+            self.forwardOn(.completed)
+            self.dispose()
         }
     }
 }
 
-private final class DefaultIfEmpty<SourceType>: Producer<SourceType> {
-    private let source: Observable<SourceType>
-    private let `default`: SourceType
-
-    init(source: Observable<SourceType>, default: SourceType) {
-        self.source = source
-        self.default = `default`
+final private class DefaultIfEmpty<SourceType>: Producer<SourceType> {
+    private let _source: Observable<SourceType>
+    private let _default: SourceType
+    
+    init(source: Observable<SourceType>, `default`: SourceType) {
+        self._source = source
+        self._default = `default`
     }
-
+    
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == SourceType {
-        let sink = DefaultIfEmptySink(default: self.default, observer: observer, cancel: cancel)
-        let subscription = source.subscribe(sink)
+        let sink = DefaultIfEmptySink(default: self._default, observer: observer, cancel: cancel)
+        let subscription = self._source.subscribe(sink)
         return (sink: sink, subscription: subscription)
     }
 }

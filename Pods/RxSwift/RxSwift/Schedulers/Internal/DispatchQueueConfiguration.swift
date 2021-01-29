@@ -7,7 +7,7 @@
 //
 
 import Dispatch
-import Foundation
+import struct Foundation.TimeInterval
 
 struct DispatchQueueConfiguration {
     let queue: DispatchQueue
@@ -18,10 +18,11 @@ extension DispatchQueueConfiguration {
     func schedule<StateType>(_ state: StateType, action: @escaping (StateType) -> Disposable) -> Disposable {
         let cancel = SingleAssignmentDisposable()
 
-        queue.async {
+        self.queue.async {
             if cancel.isDisposed {
                 return
             }
+
 
             cancel.setDisposable(action(state))
         }
@@ -34,8 +35,8 @@ extension DispatchQueueConfiguration {
 
         let compositeDisposable = CompositeDisposable()
 
-        let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.schedule(deadline: deadline, leeway: leeway)
+        let timer = DispatchSource.makeTimerSource(queue: self.queue)
+        timer.schedule(deadline: deadline, leeway: self.leeway)
 
         // TODO:
         // This looks horrible, and yes, it is.
@@ -68,9 +69,9 @@ extension DispatchQueueConfiguration {
 
         var timerState = state
 
-        let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.schedule(deadline: initial, repeating: period, leeway: leeway)
-
+        let timer = DispatchSource.makeTimerSource(queue: self.queue)
+        timer.schedule(deadline: initial, repeating: period, leeway: self.leeway)
+        
         // TODO:
         // This looks horrible, and yes, it is.
         // It looks like Apple has made a conceputal change here, and I'm unsure why.
@@ -90,7 +91,7 @@ extension DispatchQueueConfiguration {
             timerState = action(timerState)
         })
         timer.resume()
-
+        
         return cancelTimer
     }
 }

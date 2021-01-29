@@ -6,7 +6,7 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
     /**
      Returns an empty observable sequence, using the specified scheduler to send out the single `Completed` message.
 
@@ -14,12 +14,12 @@ public extension ObservableType {
 
      - returns: An observable sequence with no elements.
      */
-    static func empty() -> Observable<Element> {
-        EmptyProducer<Element>()
+    public static func empty() -> Observable<Element> {
+        return EmptyProducer<Element>()
     }
 }
 
-private final class EmptyProducer<Element>: Producer<Element> {
+final private class EmptyProducer<Element>: Producer<Element> {
     override func subscribe<Observer: ObserverType>(_ observer: Observer) -> Disposable where Observer.Element == Element {
         observer.on(.completed)
         return Disposables.create()

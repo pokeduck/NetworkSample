@@ -8,25 +8,26 @@
 
 #if os(macOS)
 
-    import Cocoa
-    import RxSwift
+import RxSwift
+import Cocoa
 
-    public extension Reactive where Base: NSButton {
-        /// Reactive wrapper for control event.
-        var tap: ControlEvent<Void> {
-            controlEvent
-        }
-
-        /// Reactive wrapper for `state` property`.
-        var state: ControlProperty<NSControl.StateValue> {
-            base.rx.controlProperty(
-                getter: { control in
-                    control.state
-                }, setter: { (control: NSButton, state: NSControl.StateValue) in
-                    control.state = state
-                }
-            )
-        }
+extension Reactive where Base: NSButton {
+    
+    /// Reactive wrapper for control event.
+    public var tap: ControlEvent<Void> {
+        return self.controlEvent
     }
+    
+    /// Reactive wrapper for `state` property`.
+    public var state: ControlProperty<NSControl.StateValue> {
+        return self.base.rx.controlProperty(
+            getter: { control in
+                return control.state
+            }, setter: { (control: NSButton, state: NSControl.StateValue) in
+                control.state = state
+            }
+        )
+    }
+}
 
 #endif

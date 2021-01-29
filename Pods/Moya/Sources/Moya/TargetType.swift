@@ -2,6 +2,7 @@ import Foundation
 
 /// The protocol used to define the specifications necessary for a `MoyaProvider`.
 public protocol TargetType {
+
     /// The target's base `URL`.
     var baseURL: URL { get }
 
@@ -25,8 +26,9 @@ public protocol TargetType {
 }
 
 public extension TargetType {
+
     /// The type of validation to perform on the request. Default is `.none`.
     var validationType: ValidationType {
-        .none
+        return .none
     }
 }

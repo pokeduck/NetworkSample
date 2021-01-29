@@ -10,7 +10,7 @@ import RxSwift
 
 /**
  Trait that represents observable sequence with following properties:
-
+ 
  - it never fails
  - it delivers events on `MainScheduler.instance`
  - `share(scope: .whileConnected)` sharing strategy
@@ -24,22 +24,22 @@ import RxSwift
  In case trait that models state propagation is required, please check `Driver`.
 
  `Signal<Element>` can be considered a builder pattern for observable sequences that model imperative events part of the application.
-
+ 
  To find out more about units and how to use them, please visit `Documentation/Traits.md`.
  */
 public typealias Signal<Element> = SharedSequence<SignalSharingStrategy, Element>
 
 public struct SignalSharingStrategy: SharingStrategyProtocol {
-    public static var scheduler: SchedulerType { SharingScheduler.make() }
-
+    public static var scheduler: SchedulerType { return SharingScheduler.make() }
+    
     public static func share<Element>(_ source: Observable<Element>) -> Observable<Element> {
-        source.share(scope: .whileConnected)
+        return source.share(scope: .whileConnected)
     }
 }
 
-public extension SharedSequenceConvertibleType where SharingStrategy == SignalSharingStrategy {
+extension SharedSequenceConvertibleType where SharingStrategy == SignalSharingStrategy {
     /// Adds `asPublisher` to `SharingSequence` with `PublishSharingStrategy`.
-    func asSignal() -> Signal<Element> {
-        asSharedSequence()
+    public func asSignal() -> Signal<Element> {
+        return self.asSharedSequence()
     }
 }

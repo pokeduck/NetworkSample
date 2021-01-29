@@ -6,16 +6,16 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-struct SubscriptionDisposable<T: SynchronizedUnsubscribeType>: Disposable {
-    private let key: T.DisposeKey
-    private weak var owner: T?
+struct SubscriptionDisposable<T: SynchronizedUnsubscribeType> : Disposable {
+    private let _key: T.DisposeKey
+    private weak var _owner: T?
 
     init(owner: T, key: T.DisposeKey) {
-        self.owner = owner
-        self.key = key
+        self._owner = owner
+        self._key = key
     }
 
     func dispose() {
-        owner?.synchronizedUnsubscribe(key)
+        self._owner?.synchronizedUnsubscribe(self._key)
     }
 }

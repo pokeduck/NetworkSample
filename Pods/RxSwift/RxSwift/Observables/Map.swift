@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Projects each element of an observable sequence into a new form.
 
@@ -16,61 +17,61 @@ public extension ObservableType {
      - returns: An observable sequence whose elements are the result of invoking the transform function on each element of source.
 
      */
-    func map<Result>(_ transform: @escaping (Element) throws -> Result)
-        -> Observable<Result>
-    {
-        Map(source: asObservable(), transform: transform)
+    public func map<Result>(_ transform: @escaping (Element) throws -> Result)
+        -> Observable<Result> {
+        return Map(source: self.asObservable(), transform: transform)
     }
 }
 
-private final class MapSink<SourceType, Observer: ObserverType>: Sink<Observer>, ObserverType {
+final private class MapSink<SourceType, Observer: ObserverType>: Sink<Observer>, ObserverType {
     typealias Transform = (SourceType) throws -> ResultType
 
-    typealias ResultType = Observer.Element
+    typealias ResultType = Observer.Element 
     typealias Element = SourceType
 
-    private let transform: Transform
+    private let _transform: Transform
 
     init(transform: @escaping Transform, observer: Observer, cancel: Cancelable) {
-        self.transform = transform
+        self._transform = transform
         super.init(observer: observer, cancel: cancel)
     }
 
     func on(_ event: Event<SourceType>) {
         switch event {
-        case let .next(element):
+        case .next(let element):
             do {
-                let mappedElement = try transform(element)
-                forwardOn(.next(mappedElement))
-            } catch let e {
+                let mappedElement = try self._transform(element)
+                self.forwardOn(.next(mappedElement))
+            }
+            catch let e {
                 self.forwardOn(.error(e))
                 self.dispose()
             }
-        case let .error(error):
-            forwardOn(.error(error))
-            dispose()
+        case .error(let error):
+            self.forwardOn(.error(error))
+            self.dispose()
         case .completed:
-            forwardOn(.completed)
-            dispose()
+            self.forwardOn(.completed)
+            self.dispose()
         }
     }
 }
 
-private final class Map<SourceType, ResultType>: Producer<ResultType> {
+final private class Map<SourceType, ResultType>: Producer<ResultType> {
     typealias Transform = (SourceType) throws -> ResultType
 
-    private let source: Observable<SourceType>
+    private let _source: Observable<SourceType>
 
-    private let transform: Transform
+    private let _transform: Transform
 
     init(source: Observable<SourceType>, transform: @escaping Transform) {
-        self.source = source
-        self.transform = transform
+        self._source = source
+        self._transform = transform
     }
 
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == ResultType {
-        let sink = MapSink(transform: transform, observer: observer, cancel: cancel)
-        let subscription = source.subscribe(sink)
+        let sink = MapSink(transform: self._transform, observer: observer, cancel: cancel)
+        let subscription = self._source.subscribe(sink)
         return (sink: sink, subscription: subscription)
     }
 }

@@ -29,17 +29,17 @@ import RxSwift
         }
     }
 
-    public extension Reactive where Base: UITextField {
+    extension Reactive where Base: UITextField {
         /// Reactive text input.
-        var textInput: TextInput<Base> {
-            TextInput(base: base, text: text)
+        public var textInput: TextInput<Base> {
+            return TextInput(base: base, text: self.text)
         }
     }
 
-    public extension Reactive where Base: UITextView {
+    extension Reactive where Base: UITextView {
         /// Reactive text input.
-        var textInput: TextInput<Base> {
-            TextInput(base: base, text: text)
+        public var textInput: TextInput<Base> {
+            return TextInput(base: base, text: self.text)
         }
     }
 
@@ -66,11 +66,13 @@ import RxSwift
         }
     }
 
-    public extension Reactive where Base: NSTextField, Base: NSTextInputClient {
+    extension Reactive where Base: NSTextField, Base: NSTextInputClient {
         /// Reactive text input.
-        var textInput: TextInput<Base> {
-            TextInput(base: base, text: text)
+        public var textInput: TextInput<Base> {
+            return TextInput(base: self.base, text: self.text)
         }
     }
 
 #endif
+
+

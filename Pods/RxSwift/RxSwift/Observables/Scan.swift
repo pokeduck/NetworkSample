@@ -6,7 +6,8 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-public extension ObservableType {
+extension ObservableType {
+
     /**
      Applies an accumulator function over an observable sequence and returns each intermediate result. The specified seed value is used as the initial accumulator value.
 
@@ -18,10 +19,9 @@ public extension ObservableType {
      - parameter accumulator: An accumulator function to be invoked on each element.
      - returns: An observable sequence containing the accumulated values.
      */
-    func scan<A>(into seed: A, accumulator: @escaping (inout A, Element) throws -> Void)
-        -> Observable<A>
-    {
-        Scan(source: asObservable(), seed: seed, accumulator: accumulator)
+    public func scan<A>(into seed: A, accumulator: @escaping (inout A, Element) throws -> Void)
+        -> Observable<A> {
+        return Scan(source: self.asObservable(), seed: seed, accumulator: accumulator)
     }
 
     /**
@@ -35,65 +35,66 @@ public extension ObservableType {
      - parameter accumulator: An accumulator function to be invoked on each element.
      - returns: An observable sequence containing the accumulated values.
      */
-    func scan<A>(_ seed: A, accumulator: @escaping (A, Element) throws -> A)
-        -> Observable<A>
-    {
-        Scan(source: asObservable(), seed: seed) { acc, element in
+    public func scan<A>(_ seed: A, accumulator: @escaping (A, Element) throws -> A)
+        -> Observable<A> {
+        return Scan(source: self.asObservable(), seed: seed) { acc, element in
             let currentAcc = acc
             acc = try accumulator(currentAcc, element)
         }
     }
 }
 
-private final class ScanSink<Element, Observer: ObserverType>: Sink<Observer>, ObserverType {
-    typealias Accumulate = Observer.Element
+final private class ScanSink<Element, Observer: ObserverType>: Sink<Observer>, ObserverType {
+    typealias Accumulate = Observer.Element 
     typealias Parent = Scan<Element, Accumulate>
 
-    private let parent: Parent
-    private var accumulate: Accumulate
-
+    private let _parent: Parent
+    private var _accumulate: Accumulate
+    
     init(parent: Parent, observer: Observer, cancel: Cancelable) {
-        self.parent = parent
-        accumulate = parent.seed
+        self._parent = parent
+        self._accumulate = parent._seed
         super.init(observer: observer, cancel: cancel)
     }
-
+    
     func on(_ event: Event<Element>) {
         switch event {
-        case let .next(element):
+        case .next(let element):
             do {
-                try parent.accumulator(&accumulate, element)
-                forwardOn(.next(accumulate))
-            } catch {
-                forwardOn(.error(error))
-                dispose()
+                try self._parent._accumulator(&self._accumulate, element)
+                self.forwardOn(.next(self._accumulate))
             }
-        case let .error(error):
-            forwardOn(.error(error))
-            dispose()
+            catch let error {
+                self.forwardOn(.error(error))
+                self.dispose()
+            }
+        case .error(let error):
+            self.forwardOn(.error(error))
+            self.dispose()
         case .completed:
-            forwardOn(.completed)
-            dispose()
+            self.forwardOn(.completed)
+            self.dispose()
         }
     }
+    
 }
 
-private final class Scan<Element, Accumulate>: Producer<Accumulate> {
+final private class Scan<Element, Accumulate>: Producer<Accumulate> {
     typealias Accumulator = (inout Accumulate, Element) throws -> Void
-
-    private let source: Observable<Element>
-    fileprivate let seed: Accumulate
-    fileprivate let accumulator: Accumulator
-
+    
+    private let _source: Observable<Element>
+    fileprivate let _seed: Accumulate
+    fileprivate let _accumulator: Accumulator
+    
     init(source: Observable<Element>, seed: Accumulate, accumulator: @escaping Accumulator) {
-        self.source = source
-        self.seed = seed
-        self.accumulator = accumulator
+        self._source = source
+        self._seed = seed
+        self._accumulator = accumulator
     }
-
+    
     override func run<Observer: ObserverType>(_ observer: Observer, cancel: Cancelable) -> (sink: Disposable, subscription: Disposable) where Observer.Element == Accumulate {
         let sink = ScanSink(parent: self, observer: observer, cancel: cancel)
-        let subscription = source.subscribe(sink)
+        let subscription = self._source.subscribe(sink)
         return (sink: sink, subscription: subscription)
     }
 }
