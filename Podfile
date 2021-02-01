@@ -11,7 +11,8 @@ target 'NetworkSample' do
   pod 'SnapKit', '~> 5.0.0'
   pod 'FLEX', :configurations => ['Debug']
   pod 'RxWebKit'
-
+  pod 'SwifterSwift', '~> 5.0'
+  pod 'NSObject+Rx'
   # Pods for NetworkSample
 
   target 'NetworkSampleTests' do
