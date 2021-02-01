@@ -5,54 +5,81 @@
 // Copyright © 2021 Alien. All rights reserved.
 //
 
+
 import SafariServices
 import UIKit
 import WebKit
 import FLEX
 import AuthenticationServices
+import SwifterSwift
+import Moya
+import RxSwift
+import NSObject_Rx
 
 class ViewController: UIViewController {
+    private let disposeBag = DisposeBag()
+    let githubLoginManager = GitHubLoginManager()
     override func viewDidLoad() {
         super.viewDidLoad()
         let btn = UIButton()
-        btn.setTitleColor(.black, for: .normal)
+        btn.setTitleColor(.systemBlue, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 30)
         btn.setTitle("Go", for: .normal)
         btn.addTarget(self, action: #selector(go), for: .touchUpInside)
         btn.frame = CGRect(x: 30, y: 30, width: 100, height: 100)
         view.addSubview(btn)
-
-        let ringtonPath = Bundle.main.path(forResource: "hoho", ofType: "wav")!
+        btn.rx.tap
+        let ringtonPath = Bundle.main.path(forResource: "morning", ofType: "wav")!
         let bundleRingUrl = URL(fileURLWithPath: ringtonPath)
         let path = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
         let url = path[0].appendingPathComponent("Sounds", isDirectory: true)
-        let targetURL = url.appendingPathComponent("hoho.wav")
+        let targetURL = url.appendingPathComponent("morning.wav")
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
+        try? FileManager.default.removeItem(at: targetURL)
         try? FileManager.default.copyItem(at: bundleRingUrl, to: targetURL)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     @objc func go() {
-//        FLEXManager.shared.showExplorer()
-
+        FLEXManager.shared.showExplorer()
+        githubLoginManager.login().subscribe { (model) in
+            dLog(model.id)
+        } onError: { (error) in
+            dLog(error.localizedDescription)
+        }.disposed(by: rx.disposeBag)
+        return
 //        present(GitHubAuthViewController(), animated: true, completion: nil)
         //fetchCookies()
 
-         login(from: self)
+         //login(from: self)
     }
-
+    private let accessTokenTrigger = PublishSubject<AuthResponse>()
     func login(from vc: UIViewController) {
         let authorize = GitHub.Authorize()
-
-        ASWebAuthenticationSession.present(url: authorize.fullURL!, from: self) { (url, error) in
-            dLog(url)
+        guard let url = authorize.fullURL else { return }
+        
+        let codeRequest = ASWebAuthenticationSession.present(url: url, from: self)
+        
+        let tokenReq = codeRequest.flatMap { (response) -> Single<GitHub.AccessToken.ResponseType> in
+            return API.shared.request(GitHub.AccessToken(code: response.code, state: response.state))
+        }
+        let userProfileReq = tokenReq.flatMap { (response) -> Single<GitHub.Users.ResponseType> in
+            return API.shared.request(GitHub.Users(token: response.accessToken))
         }
         
-        
+        userProfileReq.subscribe { (response) in
+            dLog(response.id)
+        } onError: { (error) in
+            dLog(error.localizedDescription)
+        }.disposed(by: disposeBag)
+
+        return
+        return
 //        UIApplication.shared.open(url, options: [:]) { _ in }
         let auth = ASWebAuthenticationSession(url: authorize.fullURL!, callbackURLScheme: nil) { (url, error) in
-            dLog(url)
+            
+            
         }
         auth.prefersEphemeralWebBrowserSession = true
         auth.presentationContextProvider = self

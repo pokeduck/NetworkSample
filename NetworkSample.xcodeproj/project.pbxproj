@@ -10,6 +10,10 @@
 		6C346E54104F3D9A54E3CA11 /* Pods_NetworkSampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F635B16739223DEFCD13815 /* Pods_NetworkSampleTests.framework */; };
 		A6DF6DD4C6CC743B8927A9BE /* Pods_NetworkSample_NetworkSampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D98067ACE31010CE8416EAE /* Pods_NetworkSample_NetworkSampleUITests.framework */; };
 		C44663F30AD9B42900A1E07F /* Pods_NetworkSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F1BCE3FFE3D26C469CB5607 /* Pods_NetworkSample.framework */; };
+		E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */; };
+		E0562D0B25C7DBD700E7CC5B /* morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = E0562D0A25C7DBD700E7CC5B /* morning.wav */; };
+		E0562D1325C7DEC200E7CC5B /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D1225C7DEC200E7CC5B /* API.swift */; };
+		E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */; };
 		E085535525C28D8E00C0B1E4 /* aoe.aiff in Resources */ = {isa = PBXBuildFile; fileRef = E085535425C28D8E00C0B1E4 /* aoe.aiff */; };
 		E085536725C291C800C0B1E4 /* hoho.wav in Resources */ = {isa = PBXBuildFile; fileRef = E085536625C291C800C0B1E4 /* hoho.wav */; };
 		E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090900B25BFF07D0060B70A /* AppDelegate.swift */; };
@@ -20,7 +24,7 @@
 		E090901825BFF07D0060B70A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E090901625BFF07D0060B70A /* LaunchScreen.storyboard */; };
 		E090902325BFF07D0060B70A /* NetworkSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090902225BFF07D0060B70A /* NetworkSampleTests.swift */; };
 		E090902E25BFF07E0060B70A /* NetworkSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090902D25BFF07E0060B70A /* NetworkSampleUITests.swift */; };
-		E090907B25BFFBFF0060B70A /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090907A25BFFBFF0060B70A /* API.swift */; };
+		E090907B25BFFBFF0060B70A /* GitHubModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090907A25BFFBFF0060B70A /* GitHubModels.swift */; };
 		E090908F25C014920060B70A /* AccessToken.json in Resources */ = {isa = PBXBuildFile; fileRef = E090908E25C014920060B70A /* AccessToken.json */; };
 		E09090AF25C11B470060B70A /* GitHubUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090AE25C11B470060B70A /* GitHubUser.swift */; };
 		E09090B425C11BF80060B70A /* GitHubUser.json in Resources */ = {isa = PBXBuildFile; fileRef = E09090B325C11BF80060B70A /* GitHubUser.json */; };
@@ -57,6 +61,10 @@
 		87A941C2E3DFF092031C67FF /* Pods-NetworkSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSample.release.xcconfig"; path = "Target Support Files/Pods-NetworkSample/Pods-NetworkSample.release.xcconfig"; sourceTree = "<group>"; };
 		AD1058CA15D21454C14EFC3F /* Pods-NetworkSampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3D284119487818528F77848 /* Pods-NetworkSampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASWebAuthenticationSession+Present.swift"; sourceTree = "<group>"; };
+		E0562D0A25C7DBD700E7CC5B /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = morning.wav; sourceTree = "<group>"; };
+		E0562D1225C7DEC200E7CC5B /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubLoginManager.swift; sourceTree = "<group>"; };
 		E085535425C28D8E00C0B1E4 /* aoe.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = aoe.aiff; sourceTree = SOURCE_ROOT; };
 		E085536625C291C800C0B1E4 /* hoho.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hoho.wav; sourceTree = "<group>"; };
 		E090900825BFF07D0060B70A /* NetworkSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,7 +81,7 @@
 		E090902925BFF07E0060B70A /* NetworkSampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkSampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E090902D25BFF07E0060B70A /* NetworkSampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSampleUITests.swift; sourceTree = "<group>"; };
 		E090902F25BFF07E0060B70A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E090907A25BFFBFF0060B70A /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		E090907A25BFFBFF0060B70A /* GitHubModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubModels.swift; sourceTree = "<group>"; };
 		E090908E25C014920060B70A /* AccessToken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessToken.json; sourceTree = "<group>"; };
 		E09090AE25C11B470060B70A /* GitHubUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUser.swift; sourceTree = "<group>"; };
 		E09090B325C11BF80060B70A /* GitHubUser.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = GitHubUser.json; sourceTree = "<group>"; };
@@ -134,6 +142,29 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		E0562D1725C8097900E7CC5B /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */,
+				E0562D1225C7DEC200E7CC5B /* API.swift */,
+				E09090B825C146710060B70A /* DebugLog.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		E0562D1B25C809B700E7CC5B /* GitHub */ = {
+			isa = PBXGroup;
+			children = (
+				E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */,
+				E090907A25BFFBFF0060B70A /* GitHubModels.swift */,
+				E09090AE25C11B470060B70A /* GitHubUser.swift */,
+				E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */,
+				E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */,
+				E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */,
+			);
+			path = GitHub;
+			sourceTree = "<group>";
+		};
 		E0908FFF25BFF07D0060B70A = {
 			isa = PBXGroup;
 			children = (
@@ -162,14 +193,11 @@
 				E090900B25BFF07D0060B70A /* AppDelegate.swift */,
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
-				E090907A25BFFBFF0060B70A /* API.swift */,
-				E09090AE25C11B470060B70A /* GitHubUser.swift */,
-				E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */,
-				E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */,
-				E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */,
-				E09090B825C146710060B70A /* DebugLog.swift */,
+				E0562D1B25C809B700E7CC5B /* GitHub */,
+				E0562D1725C8097900E7CC5B /* Common */,
 				E090908E25C014920060B70A /* AccessToken.json */,
 				E09090B325C11BF80060B70A /* GitHubUser.json */,
+				E0562D0A25C7DBD700E7CC5B /* morning.wav */,
 				E085536625C291C800C0B1E4 /* hoho.wav */,
 				E085535425C28D8E00C0B1E4 /* aoe.aiff */,
 				E090901125BFF07D0060B70A /* Main.storyboard */,
@@ -307,6 +335,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E085536725C291C800C0B1E4 /* hoho.wav in Resources */,
+				E0562D0B25C7DBD700E7CC5B /* morning.wav in Resources */,
 				E090901825BFF07D0060B70A /* LaunchScreen.storyboard in Resources */,
 				E090901525BFF07D0060B70A /* Assets.xcassets in Resources */,
 				E09090B425C11BF80060B70A /* GitHubUser.json in Resources */,
@@ -440,13 +469,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0562D1325C7DEC200E7CC5B /* API.swift in Sources */,
 				E09090E425C15AA50060B70A /* GitHubAuthWebView.swift in Sources */,
 				E090901025BFF07D0060B70A /* ViewController.swift in Sources */,
 				E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */,
 				E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */,
 				E09090B925C146710060B70A /* DebugLog.swift in Sources */,
+				E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */,
+				E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */,
 				E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */,
-				E090907B25BFFBFF0060B70A /* API.swift in Sources */,
+				E090907B25BFFBFF0060B70A /* GitHubModels.swift in Sources */,
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,
 				E09090AF25C11B470060B70A /* GitHubUser.swift in Sources */,
 			);
