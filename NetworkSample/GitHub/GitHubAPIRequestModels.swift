@@ -7,19 +7,7 @@
 
 import Moya
 
-struct Profile: Codable {
-    let name: String
-}
 
-struct AuthToken: Codable {
-    let accessToken, scope, tokenType: String
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case scope
-        case tokenType = "token_type"
-    }
-}
 
 // {"access_token":"e72e167e42f292c6912e7710c838347ae178b4a", "scope":"repo,gist", "token_type":"bearer"}
 

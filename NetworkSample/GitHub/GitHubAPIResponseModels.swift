@@ -5,14 +5,21 @@
 // Copyright © 2021 Alien. All rights reserved.
 //
 
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
-//
-//   let gitHubUser = try GitHubUser(json)
-
 import Foundation
 
-// MARK: - GitHubUser
+struct Profile: Codable {
+    let name: String
+}
+
+struct AuthToken: Codable {
+    let accessToken, scope, tokenType: String
+
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case scope
+        case tokenType = "token_type"
+    }
+}
 
 struct GitHubUserModel: Codable {
     let login: String

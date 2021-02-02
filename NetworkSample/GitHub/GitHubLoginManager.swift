@@ -22,21 +22,13 @@ final class GitHubLoginManager: NSObject {
                 }
             }
         }
-        
-        let codeRequest = ASWebAuthenticationSession.present(url: url, from: self)
-        
-        let tokenReq = codeRequest.flatMap { (response) -> Single<GitHub.AccessToken.ResponseType> in
-            return API.shared.request(GitHub.AccessToken(code: response.code, state: response.state))
-        }
-        let userProfileReq = tokenReq.flatMap { (response) -> Single<GitHub.Users.ResponseType> in
-            return API.shared.request(GitHub.Users(token: response.accessToken))
-        }
-        return userProfileReq
-//        userProfileReq.subscribe { (response) in
-//            dLog(response.id)
-//        } onError: { (error) in
-//            dLog(error.localizedDescription)
-//        }.disposed(by: disposeBag)
+        return ASWebAuthenticationSession.present(url: url, from: self)
+            .flatMap {  (response) -> Single<GitHub.AccessToken.ResponseType> in
+                return API.shared.request(GitHub.AccessToken(code: response.code, state: response.state))
+            }
+            .flatMap { (response) -> Single<GitHub.Users.ResponseType> in
+                return API.shared.request(GitHub.Users(token: response.accessToken))
+            }
     }
 }
 
