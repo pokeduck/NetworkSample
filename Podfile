@@ -14,6 +14,8 @@ target 'NetworkSample' do
   pod 'SwifterSwift', '~> 5.0'
   pod 'NSObject+Rx'
   # Pods for NetworkSample
+  pod 'OAuthSwift', '~> 2.0.0'
+
 
   target 'NetworkSampleTests' do
     inherit! :search_paths

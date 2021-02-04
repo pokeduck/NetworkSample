@@ -28,26 +28,53 @@ class ViewController: UIViewController {
         btn.addTarget(self, action: #selector(go), for: .touchUpInside)
         btn.frame = CGRect(x: 30, y: 30, width: 100, height: 100)
         view.addSubview(btn)
-        btn.rx.tap
-        let ringtonPath = Bundle.main.path(forResource: "morning", ofType: "wav")!
-        let bundleRingUrl = URL(fileURLWithPath: ringtonPath)
-        let path = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
-        let url = path[0].appendingPathComponent("Sounds", isDirectory: true)
-        let targetURL = url.appendingPathComponent("morning.wav")
-        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
-        try? FileManager.default.removeItem(at: targetURL)
-        try? FileManager.default.copyItem(at: bundleRingUrl, to: targetURL)
+        
+        
+        
+//        let ringtonPath = Bundle.main.path(forResource: "morning", ofType: "wav")!
+//        let bundleRingUrl = URL(fileURLWithPath: ringtonPath)
+//        let path = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
+//        let url = path[0].appendingPathComponent("Sounds", isDirectory: true)
+//        let targetURL = url.appendingPathComponent("morning.wav")
+//        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
+//        try? FileManager.default.removeItem(at: targetURL)
+//        try? FileManager.default.copyItem(at: bundleRingUrl, to: targetURL)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     @objc func go() {
-        FLEXManager.shared.showExplorer()
-        githubLoginManager.login().subscribe { (model) in
-            dLog(model.id)
+        
+        let tw = Twitter.RequestToken()
+        dLog(tw.headers)
+        API.shared.requestTwitterOAuth(tw)
+            .flatMap { (response) -> Single<TwitterAuthorizeResponseModel> in
+            return ASWebAuthenticationSession.presentTwitter(url: Twitter.Authorize(requestToken: response.oauthToken).fullURL, from: self)
+        }
+            .flatMap({ (model) -> Single<TwitterAccessTokenResponseModel> in
+                API.shared.requestTwitterOAuth(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier))
+            })
+        
+        
+        .subscribe { (model) in
+            dLog(model.oauthToken)
         } onError: { (error) in
             dLog(error.localizedDescription)
         }.disposed(by: rx.disposeBag)
+
+
+//        API.shared.requestTwitterOAuth(tw).subscribe { (response) in
+//            dLog(response.oauthToken)
+//        } onError: { (error) in
+//            dLog(error.localizedDescription)
+//        }.disposed(by: rx.disposeBag)
+
+//        FLEXManager.shared.showExplorer()
+//        githubLoginManager.login().subscribe { (model) in
+//            dLog(model.id)
+//        } onError: { (error) in
+//            dLog(error.localizedDescription)
+//        }.disposed(by: rx.disposeBag)
         return
 //        present(GitHubAuthViewController(), animated: true, completion: nil)
         //fetchCookies()
