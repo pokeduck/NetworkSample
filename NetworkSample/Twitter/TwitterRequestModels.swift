@@ -115,6 +115,29 @@ enum Twitter {
             self.oauthVerifier = verifier
         }
     }
+    ///https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-id
+    struct User: TwitterApiTargetType {
+        typealias ResponseType = TwitterAccessTokenResponseModel
+        
+        var path: String { "/2/users/\(uid)" }
+        
+        var method: Moya.Method { .get }
+        
+        var task: Task {
+            .requestPlain
+        }
+        
+        var headers: [String : String]? {
+            return nil
+        }
+        
+        let uid: String
+        
+        init(uid:String) {
+            self.uid = uid
+        }
+    }
+    
 }
 
 

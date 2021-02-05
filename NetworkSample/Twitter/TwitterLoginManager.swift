@@ -8,7 +8,8 @@
 import Foundation
 import RxSwift
 import NSObject_Rx
-
+///https://oauth.net/core/1.0/#anchor9
+///https://developer.twitter.com/en/docs/authentication/oauth-1-0a/obtaining-user-access-tokens
 class TwitterLoginManager: NSObject {
     func login() {
         let tw = Twitter.RequestToken()

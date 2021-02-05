@@ -44,8 +44,8 @@ class ViewController: UIViewController {
     }
 
     @objc func go() {
-        githubLoginManager.login()
-        //twitterLoginManager.login()
+        //githubLoginManager.login()
+        twitterLoginManager.login()
         //FLEXManager.shared.showExplorer()
     }
 
