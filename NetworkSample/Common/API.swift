@@ -12,12 +12,6 @@ import OAuthSwift
 import AuthenticationServices
 
 
-extension WebFlowAuthError: CustomNSError {
-    var errorCode: Int {
-        return 0
-    }
-    
-}
 
 protocol DecodeResponseTargetType: TargetType {
     associatedtype ResponseType: Decodable
@@ -27,28 +21,27 @@ protocol DecodeResponseAuthTargetType: DecodeResponseTargetType {
 }
 
 final class API: NSObject {
+    enum RepsonseFormat {
+        case json
+        case queryString
+    }
     static let shared = API()
     
     private override init() {}
     
     private let provider = MoyaProvider<MultiTarget>()
     
-    func request<Request: DecodeResponseTargetType>(_ request: Request) -> Single<Request.ResponseType> {
+    func request<Request: DecodeResponseTargetType>(_ request: Request, resonseType type: RepsonseFormat = .json) -> Single<Request.ResponseType> {
         let target = MultiTarget(request)
-        let newSingle =
-            provider.rx
+        let filterStatusCode = provider.rx
             .request(target)
             .filterSuccessfulStatusCodes()
-            .map(Request.ResponseType.self)
-        return newSingle
-    }
-    func requestTwitterOAuth<Request: DecodeResponseTargetType>(_ request: Request) -> Single<Request.ResponseType> {
-        let target = MultiTarget(request)
-        let newSingle =
-            provider.rx
-            .request(target)
-            .filterSuccessfulStatusCodes()
-            .map { (response) -> Request.ResponseType in
+        switch type {
+        case .json:
+            return filterStatusCode.map(Request.ResponseType.self)
+            
+        case .queryString:
+            return filterStatusCode.map { (response) -> Request.ResponseType in
                 do {
                     let str = String(data: response.data, encoding: .utf8) ?? ""
                     let newDict = str.parametersFromQueryString
@@ -57,15 +50,14 @@ final class API: NSObject {
                     
                     let decoder = JSONDecoder()
                     let model = try decoder.decode(Request.ResponseType.self, from: data)
-                    
                     return model
                 } catch let error{
                     dLog(error.localizedDescription)
                     throw MoyaError.jsonMapping(response)
                 }
-                
             }
-        return newSingle
+        }
+        
     }
     
     func requestOAuthWebFlow<R: DecodeResponseAuthTargetType>(_ request: R) -> Single<R.ResponseType> {

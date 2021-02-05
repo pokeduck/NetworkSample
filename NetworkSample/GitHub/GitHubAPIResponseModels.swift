@@ -7,11 +7,12 @@
 
 import Foundation
 
-struct Profile: Codable {
-    let name: String
+struct GitHubAuthorizeResponseModel: Codable {
+    let code: String
+    let state: String //CSRF
 }
 
-struct AuthToken: Codable {
+struct GitHubAuthTokenResponseModel: Codable {
     let accessToken, scope, tokenType: String
 
     enum CodingKeys: String, CodingKey {
@@ -21,7 +22,7 @@ struct AuthToken: Codable {
     }
 }
 
-struct GitHubUserModel: Codable {
+struct GitHubUserResponseModel: Codable {
     let login: String
     let id: Int
     let nodeID: String
@@ -30,60 +31,4 @@ struct GitHubUserModel: Codable {
         case login, id
         case nodeID = "node_id"
     }
-}
-
-
-extension GitHubUserModel {
-    init(data: Data) throws {
-        self = try newJSONDecoder().decode(GitHubUserModel.self, from: data)
-    }
-
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-
-    func with(
-        login: String? = nil,
-        id: Int? = nil,
-        nodeID: String? = nil
-    ) -> GitHubUserModel {
-        return GitHubUserModel(
-            login: login ?? self.login,
-            id: id ?? self.id,
-            nodeID: nodeID ?? self.nodeID
-        )
-    }
-
-    func jsonData() throws -> Data {
-        return try newJSONEncoder().encode(self)
-    }
-
-    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
-        return String(data: try self.jsonData(), encoding: encoding)
-    }
-}
-
-// MARK: - Helper functions for creating encoders and decoders
-
-func newJSONDecoder() -> JSONDecoder {
-    let decoder = JSONDecoder()
-    if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-        decoder.dateDecodingStrategy = .iso8601
-    }
-    return decoder
-}
-
-func newJSONEncoder() -> JSONEncoder {
-    let encoder = JSONEncoder()
-    if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-        encoder.dateEncodingStrategy = .iso8601
-    }
-    return encoder
 }

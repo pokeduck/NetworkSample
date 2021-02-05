@@ -10,12 +10,12 @@
 		6C346E54104F3D9A54E3CA11 /* Pods_NetworkSampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F635B16739223DEFCD13815 /* Pods_NetworkSampleTests.framework */; };
 		A6DF6DD4C6CC743B8927A9BE /* Pods_NetworkSample_NetworkSampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D98067ACE31010CE8416EAE /* Pods_NetworkSample_NetworkSampleUITests.framework */; };
 		C44663F30AD9B42900A1E07F /* Pods_NetworkSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F1BCE3FFE3D26C469CB5607 /* Pods_NetworkSample.framework */; };
+		E03D232225CD41930084452E /* String+Encode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03D232125CD41930084452E /* String+Encode.swift */; };
 		E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */; };
 		E0562D0B25C7DBD700E7CC5B /* morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = E0562D0A25C7DBD700E7CC5B /* morning.wav */; };
 		E0562D1325C7DEC200E7CC5B /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D1225C7DEC200E7CC5B /* API.swift */; };
 		E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */; };
 		E0562D4325C9584E00E7CC5B /* TwitterRequestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */; };
-		E0562DBA25CBE40800E7CC5B /* Response+QueryString.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */; };
 		E0562DC125CD30E900E7CC5B /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DC025CD30E900E7CC5B /* APIError.swift */; };
 		E0562DC625CD312700E7CC5B /* TwitterResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DC525CD312700E7CC5B /* TwitterResponseModels.swift */; };
 		E0562DCF25CD33C600E7CC5B /* TwitterLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DCE25CD33C600E7CC5B /* TwitterLoginManager.swift */; };
@@ -34,9 +34,6 @@
 		E09090AF25C11B470060B70A /* GitHubAPIResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090AE25C11B470060B70A /* GitHubAPIResponseModels.swift */; };
 		E09090B425C11BF80060B70A /* GitHubUser.json in Resources */ = {isa = PBXBuildFile; fileRef = E09090B325C11BF80060B70A /* GitHubUser.json */; };
 		E09090B925C146710060B70A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090B825C146710060B70A /* DebugLog.swift */; };
-		E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */; };
-		E09090E425C15AA50060B70A /* GitHubAuthWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */; };
-		E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,12 +63,12 @@
 		87A941C2E3DFF092031C67FF /* Pods-NetworkSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSample.release.xcconfig"; path = "Target Support Files/Pods-NetworkSample/Pods-NetworkSample.release.xcconfig"; sourceTree = "<group>"; };
 		AD1058CA15D21454C14EFC3F /* Pods-NetworkSampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3D284119487818528F77848 /* Pods-NetworkSampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		E03D232125CD41930084452E /* String+Encode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Encode.swift"; sourceTree = "<group>"; };
 		E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASWebAuthenticationSession+Present.swift"; sourceTree = "<group>"; };
 		E0562D0A25C7DBD700E7CC5B /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = morning.wav; sourceTree = "<group>"; };
 		E0562D1225C7DEC200E7CC5B /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubLoginManager.swift; sourceTree = "<group>"; };
 		E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterRequestModels.swift; sourceTree = "<group>"; };
-		E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+QueryString.swift"; sourceTree = "<group>"; };
 		E0562DC025CD30E900E7CC5B /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		E0562DC525CD312700E7CC5B /* TwitterResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterResponseModels.swift; sourceTree = "<group>"; };
 		E0562DCE25CD33C600E7CC5B /* TwitterLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterLoginManager.swift; sourceTree = "<group>"; };
@@ -159,7 +156,7 @@
 				E0562D1225C7DEC200E7CC5B /* API.swift */,
 				E0562DC025CD30E900E7CC5B /* APIError.swift */,
 				E09090B825C146710060B70A /* DebugLog.swift */,
-				E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */,
+				E03D232125CD41930084452E /* String+Encode.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -169,9 +166,9 @@
 			children = (
 				E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */,
 				E090907A25BFFBFF0060B70A /* GitHubAPIRequestModels.swift */,
+				E09090AE25C11B470060B70A /* GitHubAPIResponseModels.swift */,
 				E090908E25C014920060B70A /* AccessToken.json */,
 				E09090B325C11BF80060B70A /* GitHubUser.json */,
-				E09090AE25C11B470060B70A /* GitHubAPIResponseModels.swift */,
 				E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */,
 				E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */,
 				E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */,
@@ -494,16 +491,13 @@
 			files = (
 				E0562D1325C7DEC200E7CC5B /* API.swift in Sources */,
 				E0562D4325C9584E00E7CC5B /* TwitterRequestModels.swift in Sources */,
-				E09090E425C15AA50060B70A /* GitHubAuthWebView.swift in Sources */,
 				E090901025BFF07D0060B70A /* ViewController.swift in Sources */,
 				E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */,
-				E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */,
 				E09090B925C146710060B70A /* DebugLog.swift in Sources */,
 				E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */,
 				E0562DC125CD30E900E7CC5B /* APIError.swift in Sources */,
-				E0562DBA25CBE40800E7CC5B /* Response+QueryString.swift in Sources */,
 				E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */,
-				E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */,
+				E03D232225CD41930084452E /* String+Encode.swift in Sources */,
 				E0562DC625CD312700E7CC5B /* TwitterResponseModels.swift in Sources */,
 				E090907B25BFFBFF0060B70A /* GitHubAPIRequestModels.swift in Sources */,
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,

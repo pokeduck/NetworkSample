@@ -12,7 +12,7 @@ import NSObject_Rx
 class TwitterLoginManager: NSObject {
     func login() {
         let tw = Twitter.RequestToken()
-        API.shared.requestTwitterOAuth(tw)
+        API.shared.request(tw,resonseType: .queryString)
             .flatMap { (response) -> Single<TwitterAuthorizeResponseModel> in
                 dLog(response)
                 let request = API.shared.requestOAuthWebFlow(Twitter.Authorize(requestToken: response.oauthToken))
@@ -20,7 +20,8 @@ class TwitterLoginManager: NSObject {
             }
             .flatMap { (model) -> Single<TwitterAccessTokenResponseModel> in
                 dLog(model)
-                return API.shared.requestTwitterOAuth(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier))
+                
+                return API.shared.request(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier),resonseType: .queryString)
             }
 
             .subscribe { model in

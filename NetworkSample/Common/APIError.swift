@@ -22,3 +22,10 @@ extension WebFlowAuthError: LocalizedError {
         
     }
 }
+
+extension WebFlowAuthError: CustomNSError {
+    var errorCode: Int {
+        return 0
+    }
+    
+}

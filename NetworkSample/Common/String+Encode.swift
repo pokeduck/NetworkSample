@@ -5,83 +5,9 @@
 // Copyright © 2021 Alien. All rights reserved.
 //
 
-import Moya
-import RxSwift
+import Foundation
 
-extension Moya.Response {
-    func mapQueryString<D: Decodable>(_ type: D.Type, atKeyPath keyPath: String? = nil, using decoder: JSONDecoder = JSONDecoder(), failsOnEmptyData: Bool = true) throws -> D {
-        let serializeToData: (Any) throws -> Data? = { (jsonObject) in
-            guard JSONSerialization.isValidJSONObject(jsonObject) else {
-                return nil
-            }
-            do {
-                return try JSONSerialization.data(withJSONObject: jsonObject)
-            } catch {
-                throw MoyaError.jsonMapping(self)
-            }
-        }
-        let jsonData: Data
-        keyPathCheck: if let keyPath = keyPath {
-            guard let jsonObject = (try mapJSON(failsOnEmptyData: failsOnEmptyData) as? NSDictionary)?.value(forKeyPath: keyPath) else {
-                if failsOnEmptyData {
-                    throw MoyaError.jsonMapping(self)
-                } else {
-                    jsonData = data
-                    break keyPathCheck
-                }
-            }
-
-            if let data = try serializeToData(jsonObject) {
-                jsonData = data
-            } else {
-                let wrappedJsonObject = ["value": jsonObject]
-                let wrappedJsonData: Data
-                if let data = try serializeToData(wrappedJsonObject) {
-                    wrappedJsonData = data
-                } else {
-                    throw MoyaError.jsonMapping(self)
-                }
-                do {
-                    return try decoder.decode(DecodableWrapper<D>.self, from: wrappedJsonData).value
-                } catch let error {
-                    throw MoyaError.objectMapping(error, self)
-                }
-            }
-        } else {
-            jsonData = data
-        }
-        do {
-            if jsonData.count < 1 && !failsOnEmptyData {
-                if let emptyJSONObjectData = "{}".data(using: .utf8), let emptyDecodableValue = try? decoder.decode(D.self, from: emptyJSONObjectData) {
-                    return emptyDecodableValue
-                } else if let emptyJSONArrayData = "[{}]".data(using: .utf8), let emptyDecodableValue = try? decoder.decode(D.self, from: emptyJSONArrayData) {
-                    return emptyDecodableValue
-                }
-            }
-            return try decoder.decode(D.self, from: jsonData)
-        } catch let error {
-            throw MoyaError.objectMapping(error, self)
-        }
-    }
-}
-
-
-private struct DecodableWrapper<T: Decodable>: Decodable {
-let value: T
-}
-
-public extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
-
-    
-    /// Maps received data at key path into a Decodable object. If the conversion fails, the signal errors.
-    func mapQueryString<D: Decodable>(_ type: D.Type, atKeyPath keyPath: String? = nil, using decoder: JSONDecoder = JSONDecoder(), failsOnEmptyData: Bool = true) -> Single<D> {
-        return flatMap { .just(try $0.mapQueryString(type, atKeyPath: keyPath, using: decoder, failsOnEmptyData: failsOnEmptyData)) }
-    }
-}
-
-
-
-
+/// Copy from OAuthSwift
 extension String {
 
     var parametersFromQueryString: [String: String] {

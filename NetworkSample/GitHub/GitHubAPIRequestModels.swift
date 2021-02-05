@@ -28,8 +28,27 @@ enum GitHub {
     private static let redirectURI: String = "networksampledev://"
     private static let clientID: String = "a8219e70df1fad20ea32"
     private static let clientSecret: String = "3bf810107e9a41f5641c6eb8eda982382ebc21d6"
-    struct Authorize: GitHubApiTargetType {
-        typealias ResponseType = Profile
+    struct Authorize: GitHubApiTargetType,DecodeResponseAuthTargetType {
+        var oAuthURL: URL {
+            let headerDict = headers ?? ["":""]
+            var combinePath: String = baseURL.absoluteString + path
+            var argCnt = 0
+            combinePath += ""
+            for (key, val) in headerDict {
+                if argCnt == 0 {
+                    combinePath += "?"
+                } else {
+                    combinePath += "&"
+                }
+                argCnt += 1
+                combinePath += "\(key)=\(val)"
+            }
+            let path_ = combinePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+            let url = URL(string: path_)!
+            return url
+        }
+        
+        typealias ResponseType = GitHubAuthorizeResponseModel
 
         var baseURL = URL(string: "https://github.com")!
 
@@ -53,31 +72,10 @@ enum GitHub {
                 "state": UUID().uuidString,
             ]
         // https://github.com/login/oauth/authorize?redirect_uri=networksample://redirect&allow_signup=false&scpoe=repo,user:email&state=abcd
-        var fullURL: URL? {
-            guard let headerDict = headers else { return nil }
-            var combinePath: String = baseURL.absoluteString + path
-            var argCnt = 0
-            combinePath += ""
-            for (key, val) in headerDict {
-                if argCnt == 0 {
-                    combinePath += "?"
-                } else {
-                    combinePath += "&"
-                }
-                argCnt += 1
-                combinePath += "\(key)=\(val)"
-            }
-            guard let path_ = combinePath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                  let url = URL(string: path_)
-            else {
-                return nil
-            }
-            return url
-        }
     }
 
     struct AccessToken: GitHubApiTargetType {
-        typealias ResponseType = AuthToken
+        typealias ResponseType = GitHubAuthTokenResponseModel
 
         var baseURL = URL(string: "https://github.com")!
 
@@ -114,7 +112,7 @@ enum GitHub {
     }
 
     struct Users: GitHubApiTargetType {
-        typealias ResponseType = GitHubUserModel
+        typealias ResponseType = GitHubUserResponseModel
 
         var path: String = "/user"
 
