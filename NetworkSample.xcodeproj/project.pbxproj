@@ -16,6 +16,9 @@
 		E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */; };
 		E0562D4325C9584E00E7CC5B /* TwitterRequestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */; };
 		E0562DBA25CBE40800E7CC5B /* Response+QueryString.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */; };
+		E0562DC125CD30E900E7CC5B /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DC025CD30E900E7CC5B /* APIError.swift */; };
+		E0562DC625CD312700E7CC5B /* TwitterResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DC525CD312700E7CC5B /* TwitterResponseModels.swift */; };
+		E0562DCF25CD33C600E7CC5B /* TwitterLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562DCE25CD33C600E7CC5B /* TwitterLoginManager.swift */; };
 		E085535525C28D8E00C0B1E4 /* aoe.aiff in Resources */ = {isa = PBXBuildFile; fileRef = E085535425C28D8E00C0B1E4 /* aoe.aiff */; };
 		E085536725C291C800C0B1E4 /* hoho.wav in Resources */ = {isa = PBXBuildFile; fileRef = E085536625C291C800C0B1E4 /* hoho.wav */; };
 		E090900C25BFF07D0060B70A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E090900B25BFF07D0060B70A /* AppDelegate.swift */; };
@@ -69,6 +72,9 @@
 		E0562D1C25C809C500E7CC5B /* GitHubLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubLoginManager.swift; sourceTree = "<group>"; };
 		E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterRequestModels.swift; sourceTree = "<group>"; };
 		E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+QueryString.swift"; sourceTree = "<group>"; };
+		E0562DC025CD30E900E7CC5B /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		E0562DC525CD312700E7CC5B /* TwitterResponseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterResponseModels.swift; sourceTree = "<group>"; };
+		E0562DCE25CD33C600E7CC5B /* TwitterLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterLoginManager.swift; sourceTree = "<group>"; };
 		E085535425C28D8E00C0B1E4 /* aoe.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = aoe.aiff; sourceTree = SOURCE_ROOT; };
 		E085536625C291C800C0B1E4 /* hoho.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hoho.wav; sourceTree = "<group>"; };
 		E090900825BFF07D0060B70A /* NetworkSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetworkSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +157,7 @@
 			children = (
 				E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */,
 				E0562D1225C7DEC200E7CC5B /* API.swift */,
+				E0562DC025CD30E900E7CC5B /* APIError.swift */,
 				E09090B825C146710060B70A /* DebugLog.swift */,
 				E0562DB925CBE40800E7CC5B /* Response+QueryString.swift */,
 			);
@@ -170,6 +177,16 @@
 				E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */,
 			);
 			path = GitHub;
+			sourceTree = "<group>";
+		};
+		E0562DCA25CD33B200E7CC5B /* Twitter */ = {
+			isa = PBXGroup;
+			children = (
+				E0562DCE25CD33C600E7CC5B /* TwitterLoginManager.swift */,
+				E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */,
+				E0562DC525CD312700E7CC5B /* TwitterResponseModels.swift */,
+			);
+			path = Twitter;
 			sourceTree = "<group>";
 		};
 		E0908FFF25BFF07D0060B70A = {
@@ -200,7 +217,7 @@
 				E090900B25BFF07D0060B70A /* AppDelegate.swift */,
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
-				E0562D4225C9584E00E7CC5B /* TwitterRequestModels.swift */,
+				E0562DCA25CD33B200E7CC5B /* Twitter */,
 				E0562D1B25C809B700E7CC5B /* GitHub */,
 				E0562D1725C8097900E7CC5B /* Common */,
 				E0562D0A25C7DBD700E7CC5B /* morning.wav */,
@@ -483,12 +500,15 @@
 				E09090E925C16B3E0060B70A /* GitHubAuthTopView.swift in Sources */,
 				E09090B925C146710060B70A /* DebugLog.swift in Sources */,
 				E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */,
+				E0562DC125CD30E900E7CC5B /* APIError.swift in Sources */,
 				E0562DBA25CBE40800E7CC5B /* Response+QueryString.swift in Sources */,
 				E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */,
 				E09090D525C1556B0060B70A /* GitHubAuthViewController.swift in Sources */,
+				E0562DC625CD312700E7CC5B /* TwitterResponseModels.swift in Sources */,
 				E090907B25BFFBFF0060B70A /* GitHubAPIRequestModels.swift in Sources */,
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,
 				E09090AF25C11B470060B70A /* GitHubAPIResponseModels.swift in Sources */,
+				E0562DCF25CD33C600E7CC5B /* TwitterLoginManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

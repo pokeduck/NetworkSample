@@ -9,11 +9,27 @@ import Foundation
 import RxSwift
 import Moya
 import OAuthSwift
+import AuthenticationServices
 
-final class API {
+
+extension WebFlowAuthError: CustomNSError {
+    var errorCode: Int {
+        return 0
+    }
+    
+}
+
+protocol DecodeResponseTargetType: TargetType {
+    associatedtype ResponseType: Decodable
+}
+protocol DecodeResponseAuthTargetType: DecodeResponseTargetType {
+    var oAuthURL: URL { get }
+}
+
+final class API: NSObject {
     static let shared = API()
     
-    private init() {}
+    private override init() {}
     
     private let provider = MoyaProvider<MultiTarget>()
     
@@ -23,14 +39,6 @@ final class API {
             provider.rx
             .request(target)
             .filterSuccessfulStatusCodes()
-//            .map { (response) -> Request.ResponseType in
-//                let decoder = JSONDecoder()
-//                let data = try decoder.decode(Request.ResponseType.self, from: response.data)
-//                dLog(data)
-//                let responseBody = String(data: response.data, encoding: .utf8)
-//                dLog(responseBody)
-//                return Request.ResponseType(from: response.data, using: .init())!
-//            }
             .map(Request.ResponseType.self)
         return newSingle
     }
@@ -44,7 +52,6 @@ final class API {
                 do {
                     let str = String(data: response.data, encoding: .utf8) ?? ""
                     let newDict = str.parametersFromQueryString
-                    //let newResp = Response(statusCode: response.statusCode, data: newData, request: response.request, response: response.response)
                     
                     let data = try JSONSerialization.data(withJSONObject: newDict, options: .prettyPrinted)
                     
@@ -58,9 +65,48 @@ final class API {
                 }
                 
             }
-//            .mapQueryString(Request.ResponseType.self)
-            //.map(Request.ResponseType.self)
         return newSingle
+    }
+    
+    func requestOAuthWebFlow<R: DecodeResponseAuthTargetType>(_ request: R) -> Single<R.ResponseType> {
+        return Single.create { (single) -> Disposable in
+            let session = ASWebAuthenticationSession(url: request.oAuthURL, callbackURLScheme: nil) { (url, error) in
+                if let error = error {
+                    single(.error(error))
+                    return
+                }
+                guard let queryDic = url?.queryParameters else {
+                    single(.error(WebFlowAuthError.decodeQuery))
+                    return
+                }
+                do {
+                    let data = try JSONSerialization.data(withJSONObject: queryDic, options: .prettyPrinted)
+                    let decoder = JSONDecoder()
+                    let model = try decoder.decode(R.ResponseType.self, from: data)
+                    single(.success(model))
+                    return
+                } catch {
+                    single(.error(WebFlowAuthError.stringMapping))
+                    return
+                }
+                
+            }
+            
+            session.presentationContextProvider = self
+            session.prefersEphemeralWebBrowserSession = true
+            session.start()
+            
+            return Disposables.create {
+                session.cancel()
+            }
+        }
     }
 }
 
+
+extension API: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        let window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first!
+        return window
+    }
+}

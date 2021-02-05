@@ -5,20 +5,20 @@
 // Copyright © 2021 Alien. All rights reserved.
 //
 
-
+import AuthenticationServices
+import FLEX
+import Moya
+import NSObject_Rx
+import RxSwift
 import SafariServices
+import SwifterSwift
 import UIKit
 import WebKit
-import FLEX
-import AuthenticationServices
-import SwifterSwift
-import Moya
-import RxSwift
-import NSObject_Rx
 
 class ViewController: UIViewController {
     private let disposeBag = DisposeBag()
     let githubLoginManager = GitHubLoginManager()
+    let twitterLoginManager = TwitterLoginManager()
     override func viewDidLoad() {
         super.viewDidLoad()
         let btn = UIButton()
@@ -28,9 +28,7 @@ class ViewController: UIViewController {
         btn.addTarget(self, action: #selector(go), for: .touchUpInside)
         btn.frame = CGRect(x: 30, y: 30, width: 100, height: 100)
         view.addSubview(btn)
-        
-        
-        
+
 //        let ringtonPath = Bundle.main.path(forResource: "morning", ofType: "wav")!
 //        let bundleRingUrl = URL(fileURLWithPath: ringtonPath)
 //        let path = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
@@ -40,13 +38,15 @@ class ViewController: UIViewController {
 //        try? FileManager.default.removeItem(at: targetURL)
 //        try? FileManager.default.copyItem(at: bundleRingUrl, to: targetURL)
     }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
+
     @objc func go() {
-        
+        twitterLoginManager.login()
+        return
         let tw = Twitter.RequestToken()
-        dLog(tw.headers)
         API.shared.requestTwitterOAuth(tw)
             .flatMap { (response) -> Single<TwitterAuthorizeResponseModel> in
             return ASWebAuthenticationSession.presentTwitter(url: Twitter.Authorize(requestToken: response.oauthToken).fullURL, from: self)
@@ -77,40 +77,39 @@ class ViewController: UIViewController {
 //        }.disposed(by: rx.disposeBag)
         return
 //        present(GitHubAuthViewController(), animated: true, completion: nil)
-        //fetchCookies()
+            // fetchCookies()
 
-         //login(from: self)
+            // login(from: self)
     }
+
     private let accessTokenTrigger = PublishSubject<AuthResponse>()
     func login(from vc: UIViewController) {
         let authorize = GitHub.Authorize()
         guard let url = authorize.fullURL else { return }
-        
+
         let codeRequest = ASWebAuthenticationSession.present(url: url, from: self)
-        
+
         let tokenReq = codeRequest.flatMap { (response) -> Single<GitHub.AccessToken.ResponseType> in
-            return API.shared.request(GitHub.AccessToken(code: response.code, state: response.state))
+            API.shared.request(GitHub.AccessToken(code: response.code, state: response.state))
         }
         let userProfileReq = tokenReq.flatMap { (response) -> Single<GitHub.Users.ResponseType> in
-            return API.shared.request(GitHub.Users(token: response.accessToken))
+            API.shared.request(GitHub.Users(token: response.accessToken))
         }
-        
-        userProfileReq.subscribe { (response) in
+
+        userProfileReq.subscribe { response in
             dLog(response.id)
-        } onError: { (error) in
+        } onError: { error in
             dLog(error.localizedDescription)
         }.disposed(by: disposeBag)
 
         return
         return
 //        UIApplication.shared.open(url, options: [:]) { _ in }
-        let auth = ASWebAuthenticationSession(url: authorize.fullURL!, callbackURLScheme: nil) { (url, error) in
-            
-            
+        let auth = ASWebAuthenticationSession(url: authorize.fullURL!, callbackURLScheme: nil) { url, error in
         }
         auth.prefersEphemeralWebBrowserSession = true
         auth.presentationContextProvider = self
-        //auth.start()
+        // auth.start()
 //        let sfvc = SFAuthenticationSession(url: url, callbackURLScheme: "networksampledev://") { (url, error) in
 //
 //        }
@@ -124,7 +123,6 @@ class ViewController: UIViewController {
 //        safariVC.dismissButtonStyle = .cancel
 //        safariVC.modalPresentationStyle = .automatic
 //        vc.present(safariVC, animated: true, completion: nil)
-        
     }
 
     func fetchCookies() {
@@ -137,7 +135,6 @@ class ViewController: UIViewController {
                         dLog("Remove Cookie Success:\(record.displayName)")
                     }
                 }
-                
             }
         }
     }
@@ -173,9 +170,7 @@ extension ViewController: SFSafariViewControllerDelegate {
 
 extension ViewController: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        let window = UIApplication.shared.windows.filter {$0.isKeyWindow}.first!
+        let window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first!
         return window
     }
-    
-    
 }

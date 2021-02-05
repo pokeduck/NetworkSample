@@ -62,7 +62,12 @@ enum Twitter {
         }
     }
     
-    struct Authorize: TwitterApiTargetType {
+    struct Authorize: TwitterApiTargetType,DecodeResponseAuthTargetType {
+        var oAuthURL: URL {
+            let newURL = baseURL
+            return newURL.appendingPathComponent(path).appendingQueryParameters(["oauth_token":requestToken])
+        }
+        
         typealias ResponseType = TwitterAuthorizeResponseModel
         
         var authorizationType: AuthorizationType?
@@ -96,13 +101,12 @@ enum Twitter {
         var method: Moya.Method { .post }
         
         var task: Task {
-            .requestPlain
+            .requestParameters(parameters:
+                                ["oauth_token": oauthToken,
+                                 "oauth_verifier": oauthVerifier], encoding: URLEncoding.default)
         }
         
-        var headers: [String : String]? {
-            ["oauth_token": oauthToken,
-             "oauth_verifier": oauthVerifier]
-        }
+        var headers: [String : String]?
         
         let oauthToken,oauthVerifier: String
         
@@ -117,33 +121,4 @@ enum Twitter {
 
 //Response
 
-
-
-struct TwitterRequestTokenResponseModel: Codable {
-    let oauthCallbackConfirmed, oauthToken, oauthTokenSecret: String
-
-    enum CodingKeys: String, CodingKey {
-        case oauthCallbackConfirmed = "oauth_callback_confirmed"
-        case oauthToken = "oauth_token"
-        case oauthTokenSecret = "oauth_token_secret"
-    }
-}
-
-
-struct TwitterAuthorizeResponseModel: Codable {
-    let oauthToken,oauthVerifier : String
-    enum CodingKeys: String, CodingKey {
-        case oauthToken = "oauth_token"
-        case oauthVerifier = "oauth_verifier"
-    }
-}
-
-struct TwitterAccessTokenResponseModel: Codable {
-    let oauthToken,oauthTokenSecret,userID: String
-    enum CodingKeys: String, CodingKey {
-        case oauthToken = "oauth_token"
-        case oauthTokenSecret = "oauth_token_secret"
-        case userID = "user_id"
-    }
-}
 //oauth_token=6253282-eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY&oauth_token_secret=2EEfA6BG5ly3sR3XjE0IBSnlQu4ZrUzPiYTmrkVU&user_id=6253282&screen_name=twitterapi

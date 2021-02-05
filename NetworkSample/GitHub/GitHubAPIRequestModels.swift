@@ -17,9 +17,6 @@ extension String {
     }
 }
 
-protocol DecodeResponseTargetType: TargetType {
-    associatedtype ResponseType: Decodable
-}
 
 protocol GitHubApiTargetType: DecodeResponseTargetType {}
 
