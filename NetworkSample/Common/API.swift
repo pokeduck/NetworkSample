@@ -19,13 +19,13 @@ protocol DecodeResponseTargetType: TargetType {
 protocol DecodeResponseAuthTargetType: DecodeResponseTargetType {
     var oAuthURL: URL { get }
 }
-
-final class API: NSObject {
+let API = APIManager.shared
+final class APIManager: NSObject {
     enum RepsonseFormat {
         case json
         case queryString
     }
-    static let shared = API()
+    static let shared = APIManager()
     
     private override init() {}
     
@@ -96,7 +96,7 @@ final class API: NSObject {
 }
 
 
-extension API: ASWebAuthenticationPresentationContextProviding {
+extension APIManager: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         let window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first!
         return window

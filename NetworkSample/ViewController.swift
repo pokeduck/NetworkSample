@@ -46,6 +46,12 @@ class ViewController: UIViewController {
     @objc func go() {
         //githubLoginManager.login()
         twitterLoginManager.login()
+//        API.request(Twitter.VerifyCredentials()).subscribe { (model) in
+//            dLog(model)
+//        } onError: { (error) in
+//            dLog(error.localizedDescription)
+//        }.disposed(by: rx.disposeBag)
+
         //FLEXManager.shared.showExplorer()
     }
 

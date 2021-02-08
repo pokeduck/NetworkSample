@@ -49,3 +49,27 @@ extension TwitterAuthorizeResponseModel: CustomStringConvertible {
         return "Authorize:\ntoken:\(oauthToken),verifier:\(oauthVerifier)"
     }
 }
+
+
+// MARK: - Users
+struct TwitterUsersResponseModel: Codable {
+    let data: TwitterUsersDataClass
+}
+
+// MARK: - DataClass
+struct TwitterUsersDataClass: Codable {
+    let id, name, username: String
+}
+
+struct TwitterVerifyCredentialsResponseModel: Codable {
+    let id: Double
+    let idStr, name, screenName, email: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case idStr = "id_str"
+        case name
+        case screenName = "screen_name"
+        case email
+    }
+}

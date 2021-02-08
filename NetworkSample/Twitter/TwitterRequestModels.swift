@@ -116,8 +116,12 @@ enum Twitter {
         }
     }
     ///https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-id
-    struct User: TwitterApiTargetType {
-        typealias ResponseType = TwitterAccessTokenResponseModel
+    //token 1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1
+    // secret ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ
+    // uid 1319551343904780291
+    
+    struct Users: TwitterApiTargetType {
+        typealias ResponseType = TwitterUsersResponseModel
         
         var path: String { "/2/users/\(uid)" }
         
@@ -128,7 +132,11 @@ enum Twitter {
         }
         
         var headers: [String : String]? {
-            return nil
+            let credential = OAuthSwiftCredential(consumerKey: TwitterKey.V2.key, consumerSecret: TwitterKey.V2.keySecret)
+            credential.oauthToken = "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1"
+            credential.oauthTokenSecret = "ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ"
+            let header =  credential.makeHeaders(baseURL.appendingPathComponent(path), method: .GET, parameters: [:])
+            return header
         }
         
         let uid: String
@@ -138,6 +146,28 @@ enum Twitter {
         }
     }
     
+    struct VerifyCredentials: TwitterApiTargetType {
+        typealias ResponseType = TwitterVerifyCredentialsResponseModel
+        
+        var path: String { "/1.1/account/verify_credentials.json" }
+        
+        var method: Moya.Method { .get }
+        
+        var task: Task {
+            .requestParameters(parameters: ["include_email":true], encoding: URLEncoding.default)
+        }
+        
+        var headers: [String : String]? {
+            let credential = OAuthSwiftCredential(consumerKey: TwitterKey.V2.key, consumerSecret: "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1")
+//            credential.oauthToken = "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1"
+//            credential.oauthTokenSecret = "ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ"
+
+            let header =  credential.makeHeaders(baseURL.appendingPathComponent(path), method: .GET, parameters: [:])
+            return header
+            //["Authorization":"OAuth oauth_consumer_key=\"6wKxqrWpyIc1bToXS5Ox5pbTm\",oauth_token=\"1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1612780348\",oauth_nonce=\"u8KTe759ytV\",oauth_version=\"1.0\",oauth_signature=\"P2roJuysr2loo0QO1fZ5BEHWKR4%3D\""]
+        }
+        
+    }
 }
 
 

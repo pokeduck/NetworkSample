@@ -13,18 +13,21 @@ import NSObject_Rx
 class TwitterLoginManager: NSObject {
     func login() {
         let tw = Twitter.RequestToken()
-        API.shared.request(tw,resonseType: .queryString)
+        API.request(tw,resonseType: .queryString)
             .flatMap { (response) -> Single<TwitterAuthorizeResponseModel> in
                 dLog(response)
-                let request = API.shared.requestOAuthWebFlow(Twitter.Authorize(requestToken: response.oauthToken))
+                let request = API.requestOAuthWebFlow(Twitter.Authorize(requestToken: response.oauthToken))
                 return request
             }
             .flatMap { (model) -> Single<TwitterAccessTokenResponseModel> in
                 dLog(model)
                 
-                return API.shared.request(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier),resonseType: .queryString)
+                return API.request(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier),resonseType: .queryString)
             }
-
+            .flatMap({ (model) -> Single<TwitterUsersResponseModel> in
+                dLog(model)
+                return API.request(Twitter.Users(uid: model.userID))
+            })
             .subscribe { model in
                 dLog(model)
             } onError: { error in
