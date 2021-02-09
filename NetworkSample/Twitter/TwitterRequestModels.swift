@@ -7,6 +7,7 @@
 
 import Moya
 import OAuthSwift
+//import Heimdallr
 
 struct TwitterToken: Codable {
     let name: String
@@ -17,11 +18,23 @@ protocol TwitterApiTargetType: DecodeResponseTargetType,AccessTokenAuthorizable 
 extension TwitterApiTargetType {
     var baseURL: URL { URL(string: "https://api.twitter.com")! }
     
-    var authorizationType: AuthorizationType? { .custom("OAuth") }
+    //https://developer.twitter.com/en/docs/authentication/oauth-1-0a/authorizing-a-request
+    var authorizationType: AuthorizationType? {
+        .custom("OAuth")
+    }
 
     var sampleData: Data { Data() }
 
 }
+let twitterToken = TwitterTokenManager.shared
+class TwitterTokenManager {
+    static let shared = TwitterTokenManager()
+    let consumerKey = "6wKxqrWpyIc1bToXS5Ox5pbTm"
+    let consumerSecret = "ksStbWQUMW4ZFRkbDK8w08bs31Nki8V7WMuUh8AWMZJvj2Y502"
+    var oauthToken = ""
+    var oauthTokenSecret = ""
+}
+
 enum TwitterKey {
     //https://developer.twitter.com/en/docs/authentication/overview
     enum V1 { //[STANDALONE]NetworkSampleDev01
@@ -145,7 +158,7 @@ enum Twitter {
             self.uid = uid
         }
     }
-    
+
     struct VerifyCredentials: TwitterApiTargetType {
         typealias ResponseType = TwitterVerifyCredentialsResponseModel
         
@@ -154,24 +167,18 @@ enum Twitter {
         var method: Moya.Method { .get }
         
         var task: Task {
-            .requestParameters(parameters: ["include_email":true], encoding: URLEncoding.default)
+            .requestParameters(parameters: ["include_email":"true"], encoding: URLEncoding.default)
         }
         
         var headers: [String : String]? {
-            let credential = OAuthSwiftCredential(consumerKey: TwitterKey.V2.key, consumerSecret: "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1")
-//            credential.oauthToken = "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1"
-//            credential.oauthTokenSecret = "ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ"
+            let credential = OAuthSwiftCredential(consumerKey: twitterToken.consumerKey, consumerSecret: twitterToken.consumerSecret)
+            credential.oauthToken = twitterToken.oauthToken
+            credential.oauthTokenSecret = twitterToken.oauthTokenSecret
 
-            let header =  credential.makeHeaders(baseURL.appendingPathComponent(path), method: .GET, parameters: [:])
+            let header =  credential.makeHeaders(baseURL.appendingPathComponent(path), method: .GET, parameters: ["include_email":"true"])
             return header
             //["Authorization":"OAuth oauth_consumer_key=\"6wKxqrWpyIc1bToXS5Ox5pbTm\",oauth_token=\"1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1612780348\",oauth_nonce=\"u8KTe759ytV\",oauth_version=\"1.0\",oauth_signature=\"P2roJuysr2loo0QO1fZ5BEHWKR4%3D\""]
         }
         
     }
 }
-
-
-
-//Response
-
-//oauth_token=6253282-eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY&oauth_token_secret=2EEfA6BG5ly3sR3XjE0IBSnlQu4ZrUzPiYTmrkVU&user_id=6253282&screen_name=twitterapi

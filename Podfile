@@ -15,7 +15,7 @@ target 'NetworkSample' do
   pod 'NSObject+Rx'
   # Pods for NetworkSample
   pod 'OAuthSwift', '~> 2.0.0'
-
+  #pod 'Heimdallr', :git => 'https://github.com/trivago/Heimdallr.swift', :branch => 'master'
 
   target 'NetworkSampleTests' do
     inherit! :search_paths

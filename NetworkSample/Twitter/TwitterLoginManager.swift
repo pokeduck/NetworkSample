@@ -21,13 +21,15 @@ class TwitterLoginManager: NSObject {
             }
             .flatMap { (model) -> Single<TwitterAccessTokenResponseModel> in
                 dLog(model)
-                
                 return API.request(Twitter.AccessToken(token: model.oauthToken, verifier: model.oauthVerifier),resonseType: .queryString)
             }
-            .flatMap({ (model) -> Single<TwitterUsersResponseModel> in
+            .flatMap({ (model) -> Single<TwitterVerifyCredentialsResponseModel> in
                 dLog(model)
-                return API.request(Twitter.Users(uid: model.userID))
+                twitterToken.oauthToken = model.oauthToken
+                twitterToken.oauthTokenSecret = model.oauthTokenSecret
+                return API.request(Twitter.VerifyCredentials())
             })
+
             .subscribe { model in
                 dLog(model)
             } onError: { error in

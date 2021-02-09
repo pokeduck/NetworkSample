@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 import Moya
-import OAuthSwift
+//import OAuthSwift
 import AuthenticationServices
 
 
@@ -35,10 +35,13 @@ final class APIManager: NSObject {
         let target = MultiTarget(request)
         let filterStatusCode = provider.rx
             .request(target)
-            .filterSuccessfulStatusCodes()
+            //.filterSuccessfulStatusCodes()
         switch type {
         case .json:
-            return filterStatusCode.map(Request.ResponseType.self)
+            let newF = filterStatusCode.map { (response) -> Response in
+                return response
+            }
+            return newF.map(Request.ResponseType.self)
             
         case .queryString:
             return filterStatusCode.map { (response) -> Request.ResponseType in
