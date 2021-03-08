@@ -63,6 +63,7 @@
 		87A941C2E3DFF092031C67FF /* Pods-NetworkSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSample.release.xcconfig"; path = "Target Support Files/Pods-NetworkSample/Pods-NetworkSample.release.xcconfig"; sourceTree = "<group>"; };
 		AD1058CA15D21454C14EFC3F /* Pods-NetworkSampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3D284119487818528F77848 /* Pods-NetworkSampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		E001732B25E1271500B8C380 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
 		E03D232125CD41930084452E /* String+Encode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Encode.swift"; sourceTree = "<group>"; };
 		E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASWebAuthenticationSession+Present.swift"; sourceTree = "<group>"; };
 		E0562D0A25C7DBD700E7CC5B /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = morning.wav; sourceTree = "<group>"; };
@@ -214,6 +215,7 @@
 				E090900B25BFF07D0060B70A /* AppDelegate.swift */,
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
+				E001732B25E1271500B8C380 /* Location.gpx */,
 				E0562DCA25CD33B200E7CC5B /* Twitter */,
 				E0562D1B25C809B700E7CC5B /* GitHub */,
 				E0562D1725C8097900E7CC5B /* Common */,

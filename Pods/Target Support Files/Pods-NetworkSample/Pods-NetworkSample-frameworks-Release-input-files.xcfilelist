@@ -1,5 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-NetworkSample/Pods-NetworkSample-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework
 ${BUILT_PRODUCTS_DIR}/Moya/Moya.framework
 ${BUILT_PRODUCTS_DIR}/NSObject+Rx/NSObject_Rx.framework
 ${BUILT_PRODUCTS_DIR}/OAuthSwift/OAuthSwift.framework
