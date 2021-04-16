@@ -44,8 +44,9 @@ class ViewController: UIViewController {
     }
 
     @objc func go() {
+        present(PhotosVC(), animated: true, completion: nil)
         //githubLoginManager.login()
-        twitterLoginManager.login()
+        //twitterLoginManager.login()
 //        API.request(Twitter.VerifyCredentials()).subscribe { (model) in
 //            dLog(model)
 //        } onError: { (error) in
