@@ -28,6 +28,24 @@
 				<string>networksampledev</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>I</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>swifter-6wKxqrWpyIc1bToXS5Ox5pbTm</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>twitterlogin-callback01</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>

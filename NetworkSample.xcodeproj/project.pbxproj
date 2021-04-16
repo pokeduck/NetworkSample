@@ -10,6 +10,7 @@
 		6C346E54104F3D9A54E3CA11 /* Pods_NetworkSampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F635B16739223DEFCD13815 /* Pods_NetworkSampleTests.framework */; };
 		A6DF6DD4C6CC743B8927A9BE /* Pods_NetworkSample_NetworkSampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D98067ACE31010CE8416EAE /* Pods_NetworkSample_NetworkSampleUITests.framework */; };
 		C44663F30AD9B42900A1E07F /* Pods_NetworkSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F1BCE3FFE3D26C469CB5607 /* Pods_NetworkSample.framework */; };
+		E018FE042629726A00B3877D /* PhotosVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E018FE032629726A00B3877D /* PhotosVC.swift */; };
 		E03D232225CD41930084452E /* String+Encode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03D232125CD41930084452E /* String+Encode.swift */; };
 		E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */; };
 		E0562D0B25C7DBD700E7CC5B /* morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = E0562D0A25C7DBD700E7CC5B /* morning.wav */; };
@@ -64,6 +65,7 @@
 		AD1058CA15D21454C14EFC3F /* Pods-NetworkSampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B3D284119487818528F77848 /* Pods-NetworkSampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkSampleTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkSampleTests/Pods-NetworkSampleTests.release.xcconfig"; sourceTree = "<group>"; };
 		E001732B25E1271500B8C380 /* Location.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Location.gpx; sourceTree = "<group>"; };
+		E018FE032629726A00B3877D /* PhotosVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosVC.swift; sourceTree = "<group>"; };
 		E03D232125CD41930084452E /* String+Encode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Encode.swift"; sourceTree = "<group>"; };
 		E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASWebAuthenticationSession+Present.swift"; sourceTree = "<group>"; };
 		E0562D0A25C7DBD700E7CC5B /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = morning.wav; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
 				E001732B25E1271500B8C380 /* Location.gpx */,
+				E018FE032629726A00B3877D /* PhotosVC.swift */,
 				E0562DCA25CD33B200E7CC5B /* Twitter */,
 				E0562D1B25C809B700E7CC5B /* GitHub */,
 				E0562D1725C8097900E7CC5B /* Common */,
@@ -505,6 +508,7 @@
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,
 				E09090AF25C11B470060B70A /* GitHubAPIResponseModels.swift in Sources */,
 				E0562DCF25CD33C600E7CC5B /* TwitterLoginManager.swift in Sources */,
+				E018FE042629726A00B3877D /* PhotosVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

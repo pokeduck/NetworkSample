@@ -37,17 +37,17 @@ class TwitterTokenManager {
 
 enum TwitterKey {
     //https://developer.twitter.com/en/docs/authentication/overview
-    enum V1 { //[STANDALONE]NetworkSampleDev01
-        static private let key = "7btmkz4leL5tVdjsqWc7ra25l" //oauth1.0a
-        static private let secret = "I3hyeYlqxDZe5htWJAgHnY5yGWKWIvMvsdHdD827swxxbz9TVF" //oauth1.0a
-        static private let bearerToken = "AAAAAAAAAAAAAAAAAAAAAE1nMQEAAAAA5pdH%2BwSwzPqZ4WrZ5olwIU0aIWM%3D0ohpko4rsYrV2HoxHIoGLW5tV1DfggNi7OZ4Hgvi8HJtslkSBk" //oauth2.0
-    }
+//    enum V1 { //[STANDALONE]NetworkSampleDev01
+//        static private let key = "7btmkz4leL5tVdjsqWc7ra25l" //oauth1.0a
+//        static private let secret = "I3hyeYlqxDZe5htWJAgHnY5yGWKWIvMvsdHdD827swxxbz9TVF" //oauth1.0a
+//        static private let bearerToken = "AAAAAAAAAAAAAAAAAAAAAE1nMQEAAAAA5pdH%2BwSwzPqZ4WrZ5olwIU0aIWM%3D0ohpko4rsYrV2HoxHIoGLW5tV1DfggNi7OZ4Hgvi8HJtslkSBk" //oauth2.0
+//    }
     enum V2 {
-        static let key = "6wKxqrWpyIc1bToXS5Ox5pbTm" //oauth1.0a
-        static let keySecret = "ksStbWQUMW4ZFRkbDK8w08bs31Nki8V7WMuUh8AWMZJvj2Y502" //oauth1.0a
-        static let token = "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1"
-        static let tokenSecret = "ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ"
-        static let bearerToken = "AAAAAAAAAAAAAAAAAAAAAL54JAEAAAAAbi5dv43BMJLVJnOIoXPz3w1l21Q%3DcDKMiDGsJOGWjSjSp5xMd0PX8JWsSbcRcX6qoIj9FVF0s3ftAY" //oauth2.0
+        static let key = "YhDIdHtQJkH5PlQBGXb6lBtlm" //oauth1.0a
+        static let keySecret = "8Doh6CfpLVYZG3FUm2O0KvZ03EX2HqwlDdbX5bqtlfEN6nDHeC" //oauth1.0a
+//        static let token = "1319551343904780291-2SkViug1K4ok0vFgRw6FIt845wCij1"
+//        static let tokenSecret = "ewruzNtTmaJschm75Iwmp09Dp0fbuxV30RvSztLQuxtMZ"
+//        static let bearerToken = "AAAAAAAAAAAAAAAAAAAAAL54JAEAAAAAbi5dv43BMJLVJnOIoXPz3w1l21Q%3DcDKMiDGsJOGWjSjSp5xMd0PX8JWsSbcRcX6qoIj9FVF0s3ftAY" //oauth2.0
     }
 }
 enum Twitter {
