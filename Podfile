@@ -13,6 +13,7 @@ target 'NetworkSample' do
   pod 'RxWebKit'
   pod 'SwifterSwift', '~> 5.0'
   pod 'NSObject+Rx'
+  pod 'Kingfisher'
   # Pods for NetworkSample
   pod 'OAuthSwift', '~> 2.0.0'
   #pod 'Heimdallr', :git => 'https://github.com/trivago/Heimdallr.swift', :branch => 'master'
