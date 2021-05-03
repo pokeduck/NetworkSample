@@ -57,7 +57,7 @@ class SymmetricEncryption {
     }
     func test() {
         let key = String.randomMD5()
-        let data = "AAA"
+        let data = "PassPWDAABCD"
         let enc = encrypt(key: key, data: data)
         let dec = decrypt(key: key, data: enc)
         print(key)

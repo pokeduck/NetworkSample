@@ -40,6 +40,7 @@
 		E09090B925C146710060B70A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090B825C146710060B70A /* DebugLog.swift */; };
 		E0D4846C263AA00100415673 /* SymmetricCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D4846B263AA00100415673 /* SymmetricCrypto.swift */; };
 		E0D4846E263FD9B800415673 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */; };
+		E0D48473263FE3A500415673 /* AES.php in Resources */ = {isa = PBXBuildFile; fileRef = E0D48472263FE3A500415673 /* AES.php */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +110,8 @@
 		E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthTopView.swift; sourceTree = "<group>"; };
 		E0D4846B263AA00100415673 /* SymmetricCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricCrypto.swift; sourceTree = "<group>"; };
 		E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricEncryption.swift; sourceTree = "<group>"; };
+		E0D48472263FE3A500415673 /* AES.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = AES.php; sourceTree = "<group>"; };
+		E0D48474263FE3D800415673 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +281,8 @@
 			isa = PBXGroup;
 			children = (
 				E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */,
+				E0D48472263FE3A500415673 /* AES.php */,
+				E0D48474263FE3D800415673 /* README.md */,
 			);
 			path = Encryption;
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 				E090901325BFF07D0060B70A /* Main.storyboard in Resources */,
 				E090908F25C014920060B70A /* AccessToken.json in Resources */,
 				E085535525C28D8E00C0B1E4 /* aoe.aiff in Resources */,
+				E0D48473263FE3A500415673 /* AES.php in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
