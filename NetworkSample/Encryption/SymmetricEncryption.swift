@@ -71,6 +71,7 @@ extension String {
     }
 }
 extension Data {
+    //reference:https://stackoverflow.com/a/50476676/9186699
     fileprivate func split(separator: Data) -> [Data] {
         var chunks: [Data] = []
         var pos = startIndex
