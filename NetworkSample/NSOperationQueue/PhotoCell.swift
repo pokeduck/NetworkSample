@@ -8,6 +8,7 @@
 import UIKit
 
 class PhotoCell: UICollectionViewCell {
+    var dobe: Int? = nil
     lazy var imageView: UIImageView = {
         let imageV = UIImageView(frame: .zero)
         contentView.addSubview(imageV)
@@ -23,5 +24,6 @@ class PhotoCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         imageView.frame = contentView.bounds
+        dobe = .none
     }
 }

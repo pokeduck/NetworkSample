@@ -18,6 +18,8 @@ target 'NetworkSample' do
   pod 'OAuthSwift', '~> 2.0.0'
   #pod 'Heimdallr', :git => 'https://github.com/trivago/Heimdallr.swift', :branch => 'master'
   pod 'KeychainAccess'
+  pod 'CryptoSwift'
+
   target 'NetworkSampleTests' do
     inherit! :search_paths
     # Pods for testing

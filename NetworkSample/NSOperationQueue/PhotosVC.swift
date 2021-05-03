@@ -61,7 +61,8 @@ extension PhotosVC: UICollectionViewDataSource {
         cell.backgroundColor = .white
         let url = urls[indexPath.row]
         
-        cell.imageView.kf.setImage(with: URL(string: url),options: [.forceRefresh])
+        let task = cell.imageView.kf.setImage(with: URL(string: url),options: [.forceRefresh])
+        KingfisherManager.shared
         return cell
     }
     

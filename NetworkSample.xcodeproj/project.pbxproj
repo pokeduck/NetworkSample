@@ -13,6 +13,7 @@
 		E018FE042629726A00B3877D /* PhotosVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E018FE032629726A00B3877D /* PhotosVC.swift */; };
 		E018FE2F262978D200B3877D /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E018FE2E262978D200B3877D /* PhotoCell.swift */; };
 		E018FE3826298F2300B3877D /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E018FE3726298F2300B3877D /* PhotoManager.swift */; };
+		E018FE43263671F900B3877D /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E018FE42263671F900B3877D /* PhotoModel.swift */; };
 		E03D232225CD41930084452E /* String+Encode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03D232125CD41930084452E /* String+Encode.swift */; };
 		E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */; };
 		E0562D0B25C7DBD700E7CC5B /* morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = E0562D0A25C7DBD700E7CC5B /* morning.wav */; };
@@ -37,6 +38,8 @@
 		E09090AF25C11B470060B70A /* GitHubAPIResponseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090AE25C11B470060B70A /* GitHubAPIResponseModels.swift */; };
 		E09090B425C11BF80060B70A /* GitHubUser.json in Resources */ = {isa = PBXBuildFile; fileRef = E09090B325C11BF80060B70A /* GitHubUser.json */; };
 		E09090B925C146710060B70A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09090B825C146710060B70A /* DebugLog.swift */; };
+		E0D4846C263AA00100415673 /* SymmetricCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D4846B263AA00100415673 /* SymmetricCrypto.swift */; };
+		E0D4846E263FD9B800415673 /* SymmetricEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +73,7 @@
 		E018FE032629726A00B3877D /* PhotosVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosVC.swift; sourceTree = "<group>"; };
 		E018FE2E262978D200B3877D /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		E018FE3726298F2300B3877D /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		E018FE42263671F900B3877D /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
 		E03D232125CD41930084452E /* String+Encode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Encode.swift"; sourceTree = "<group>"; };
 		E0562CEE25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASWebAuthenticationSession+Present.swift"; sourceTree = "<group>"; };
 		E0562D0A25C7DBD700E7CC5B /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = morning.wav; sourceTree = "<group>"; };
@@ -103,6 +107,8 @@
 		E09090D425C1556B0060B70A /* GitHubAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthViewController.swift; sourceTree = "<group>"; };
 		E09090E325C15AA50060B70A /* GitHubAuthWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthWebView.swift; sourceTree = "<group>"; };
 		E09090E825C16B3E0060B70A /* GitHubAuthTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAuthTopView.swift; sourceTree = "<group>"; };
+		E0D4846B263AA00100415673 /* SymmetricCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricCrypto.swift; sourceTree = "<group>"; };
+		E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricEncryption.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +168,7 @@
 				E018FE032629726A00B3877D /* PhotosVC.swift */,
 				E018FE2E262978D200B3877D /* PhotoCell.swift */,
 				E018FE3726298F2300B3877D /* PhotoManager.swift */,
+				E018FE42263671F900B3877D /* PhotoModel.swift */,
 			);
 			path = NSOperationQueue;
 			sourceTree = "<group>";
@@ -232,6 +239,8 @@
 				E090900D25BFF07D0060B70A /* SceneDelegate.swift */,
 				E090900F25BFF07D0060B70A /* ViewController.swift */,
 				E001732B25E1271500B8C380 /* Location.gpx */,
+				E0D4846B263AA00100415673 /* SymmetricCrypto.swift */,
+				E0D4846F263FD9BF00415673 /* Encryption */,
 				E018FE3326298F0300B3877D /* NSOperationQueue */,
 				E0562DCA25CD33B200E7CC5B /* Twitter */,
 				E0562D1B25C809B700E7CC5B /* GitHub */,
@@ -263,6 +272,14 @@
 				E090902F25BFF07E0060B70A /* Info.plist */,
 			);
 			path = NetworkSampleUITests;
+			sourceTree = "<group>";
+		};
+		E0D4846F263FD9BF00415673 /* Encryption */ = {
+			isa = PBXGroup;
+			children = (
+				E0D4846D263FD9B800415673 /* SymmetricEncryption.swift */,
+			);
+			path = Encryption;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -508,6 +525,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E018FE43263671F900B3877D /* PhotoModel.swift in Sources */,
 				E0562D1325C7DEC200E7CC5B /* API.swift in Sources */,
 				E0562D4325C9584E00E7CC5B /* TwitterRequestModels.swift in Sources */,
 				E018FE3826298F2300B3877D /* PhotoManager.swift in Sources */,
@@ -516,12 +534,14 @@
 				E018FE2F262978D200B3877D /* PhotoCell.swift in Sources */,
 				E09090B925C146710060B70A /* DebugLog.swift in Sources */,
 				E0562D1D25C809C600E7CC5B /* GitHubLoginManager.swift in Sources */,
+				E0D4846E263FD9B800415673 /* SymmetricEncryption.swift in Sources */,
 				E0562DC125CD30E900E7CC5B /* APIError.swift in Sources */,
 				E0562CEF25C7AC4600E7CC5B /* ASWebAuthenticationSession+Present.swift in Sources */,
 				E03D232225CD41930084452E /* String+Encode.swift in Sources */,
 				E0562DC625CD312700E7CC5B /* TwitterResponseModels.swift in Sources */,
 				E090907B25BFFBFF0060B70A /* GitHubAPIRequestModels.swift in Sources */,
 				E090900E25BFF07D0060B70A /* SceneDelegate.swift in Sources */,
+				E0D4846C263AA00100415673 /* SymmetricCrypto.swift in Sources */,
 				E09090AF25C11B470060B70A /* GitHubAPIResponseModels.swift in Sources */,
 				E0562DCF25CD33C600E7CC5B /* TwitterLoginManager.swift in Sources */,
 				E018FE042629726A00B3877D /* PhotosVC.swift in Sources */,

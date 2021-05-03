@@ -44,7 +44,8 @@ class ViewController: UIViewController {
     }
 
     @objc func go() {
-        present(PhotosVC(), animated: true, completion: nil)
+        SymmetricEncryption().test()
+//        present(PhotosVC(), animated: true, completion: nil)
         //githubLoginManager.login()
         //twitterLoginManager.login()
 //        API.request(Twitter.VerifyCredentials()).subscribe { (model) in
