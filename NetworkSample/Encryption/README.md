@@ -16,8 +16,8 @@ function decrypt($key, $garble)
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
 
-echo $encode = encrypt("key", "password"); //RkxTT2J5SkVzZm5VTW9FMHViMU1xUT09OjrJfvikoZhWwSxYeErbiroN
-echo $decode = decrypt("key", $encode); //password
+echo $encode = encrypt("364fa0bde7235182b8c003ff4cbbbcee", "PassPWDAABCD"); //UFVBUHltcDYxRjc4NUt4Y0hBSDZjdz09Ojob6r5lMoaBdo/lPT4Jw+0D
+echo $decode = decrypt("364fa0bde7235182b8c003ff4cbbbcee", $encode); //PassPWDAABCD
 ```
 * `openssl_encrypt` 與 `openssl_decrypt`的 option 代表意思 :
     * 0 默認值 使用 PKCS7 填充算法，對加密結果進行 base64encode
@@ -26,7 +26,8 @@ echo $decode = decrypt("key", $encode); //password
 
 
 
-參考自:https://www.ucamc.com/e-learning/php/388-php%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8aes-openssl%E5%8A%A0%E5%AF%86%E4%BB%A3%E7%A2%BC
-https://segmentfault.com/a/1190000018059273
-https://www.php.net/manual/en/function.openssl-encrypt.php
-https://www.php.net/manual/en/function.openssl-decrypt.php
+* 參考:
+  * https://www.ucamc.com/e-learning/php/388-php%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8aes-openssl%E5%8A%A0%E5%AF%86%E4%BB%A3%E7%A2%BC
+  * https://segmentfault.com/a/1190000018059273
+  * https://www.php.net/manual/en/function.openssl-encrypt.php
+  * https://www.php.net/manual/en/function.openssl-decrypt.php
