@@ -8,17 +8,32 @@
 import CryptoSwift
 
 class SymmetricEncryption {
-    func encrypt(key: String, data: String) -> String {
+    /// PHP Option 0 or 1 or 2
+    enum Option {
+        case pkcs7 // php option 1
+        case pkcs7Base64Encode // php option 0
+        case zeroPaddingBase64Encode // phpiotion 2
+    }
+    func encrypt(key: String, data: String, option: Option = .pkcs7) -> String {
         let separator = "::".bytes
         let iv = AES.randomIV(AES.blockSize)
         let keyBytes = key.bytes
         let payload = data.bytes
         do {
-            let aesConveter = try AES(key: keyBytes, blockMode: CBC(iv: iv), padding: .pkcs7)
+            let padding: Padding = (option == .zeroPaddingBase64Encode) ? .zeroPadding : .pkcs7
+            let aesConveter = try AES(key: keyBytes, blockMode: CBC(iv: iv), padding: padding)
 
             let encryptDataArray = try aesConveter.encrypt(payload)
             
-            let combineData = Data(encryptDataArray).base64EncodedData().bytes + separator + iv
+            var combineData = [UInt8]()
+            switch option {
+            case .pkcs7:
+                combineData = encryptDataArray + separator + iv
+            case .pkcs7Base64Encode,.zeroPaddingBase64Encode:
+                combineData = Data(encryptDataArray).base64EncodedData().bytes + separator + iv
+            }
+            
+            
             
             let encrpyData = Data(combineData)
             let result = encrpyData.base64EncodedString()
@@ -28,22 +43,29 @@ class SymmetricEncryption {
             return ""
         }
     }
-    func decrypt(key: String, data: String) -> String {
+    func decrypt(key: String, data: String, option: Option = .pkcs7) -> String {
         guard let base64Data = Data(base64Encoded: data) else { return "" }
         guard let sepatator = "::".data(using: .utf8) else { return "" }
         let dataList = base64Data.split(separator: sepatator)
         guard let encryptedData = dataList.first,
-              let iv = dataList.last,
-              let encryptedDataBase64Decode = Data(base64Encoded: encryptedData)
+              let iv = dataList.last
         else { return "" }
+        var encryptedBytes = [UInt8]()
         
-        let encryptedBytes = encryptedDataBase64Decode.bytes
+        switch option {
+        case .pkcs7:
+            encryptedBytes = encryptedData.bytes
+        case .pkcs7Base64Encode,.zeroPaddingBase64Encode:
+            guard let encryptedDataBase64Decode = Data(base64Encoded: encryptedData) else { return "" }
+            encryptedBytes = encryptedDataBase64Decode.bytes
+        }
         
         let ivBytes = iv.bytes
         let keyBytes = key.bytes
         
         do {
-            let aesConveter = try AES(key: keyBytes, blockMode: CBC(iv: ivBytes), padding: .pkcs7)
+            let padding: Padding = (option == .zeroPaddingBase64Encode) ? .zeroPadding : .pkcs7
+            let aesConveter = try AES(key: keyBytes, blockMode: CBC(iv: ivBytes), padding: padding)
 
             let decryptBytes = try aesConveter.decrypt(encryptedBytes)
             let resultData = Data(decryptBytes)
@@ -58,8 +80,8 @@ class SymmetricEncryption {
     func test() {
         let key = String.randomMD5()
         let data = "PassPWDAABCD"
-        let enc = encrypt(key: key, data: data)
-        let dec = decrypt(key: key, data: enc)
+        let enc = encrypt(key: key, data: data, option: .zeroPaddingBase64Encode)
+        let dec = decrypt(key: key, data: enc, option: .zeroPaddingBase64Encode)
         print(key)
         print(enc)
         print(dec)
